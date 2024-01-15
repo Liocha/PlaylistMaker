@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3772E7"
+    android:background="@color/blue_bg"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -13,13 +13,13 @@
         android:layout_height="56dp"
         android:layout_marginTop="5dp"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
+        android:paddingHorizontal="16dp"
         android:paddingTop="12dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#3772E7"
+            android:background="@color/blue_bg"
             android:text="@string/title"
             android:textColor="@color/white"
             android:textSize="22sp" />
@@ -31,8 +31,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="28dp">
+        android:paddingVertical="24dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/search_btn"
@@ -42,12 +41,12 @@
             android:text="@string/search"
             android:textColor="@color/black"
             android:textSize="22sp"
-            app:backgroundTint="#FFFFFF"
-            app:cornerRadius="16dp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="@dimen/corner_radius"
             app:icon="@drawable/ic_search"
             app:iconGravity="textStart"
             app:iconPadding="8dp"
-            app:iconTint="#1A1B22" />
+            app:iconTint="@color/black_ic" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/media_btn"
@@ -58,12 +57,12 @@
             android:text="@string/media"
             android:textColor="@color/black"
             android:textSize="22sp"
-            app:backgroundTint="#FFFFFF"
-            app:cornerRadius="16dp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="@dimen/corner_radius"
             app:icon="@drawable/ic_media"
             app:iconGravity="textStart"
             app:iconPadding="8dp"
-            app:iconTint="#1A1B22" />
+            app:iconTint="@color/black_ic" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/settings_btn"
@@ -74,12 +73,12 @@
             android:text="@string/settings"
             android:textColor="@color/black"
             android:textSize="22sp"
-            app:backgroundTint="#FFFFFF"
-            app:cornerRadius="16dp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="@dimen/corner_radius"
             app:icon="@drawable/ic_settings"
             app:iconGravity="textStart"
             app:iconPadding="8dp"
-            app:iconTint="#1A1B22" />
+            app:iconTint="@color/black_ic" />
 
 
     </LinearLayout>

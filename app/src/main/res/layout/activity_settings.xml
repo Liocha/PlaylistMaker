@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
         android:id="@+id/settings_header"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingStart="20dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_arrow_left" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="24dp"
-            android:text="@string/settings"
-            android:textSize="22sp" />
-    </LinearLayout>
+        android:drawablePadding="24dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:text="@string/settings"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        app:drawableLeftCompat="@drawable/ic_arrow_left" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/itemHeightInSettingsMenu"
+        android:layout_height="@dimen/height_menu_item"
         android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp">
+        android:paddingHorizontal="@dimen/padding_menu_item">
 
         <TextView
             android:layout_width="0dp"
@@ -38,7 +29,8 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/dark_theme"
-            android:textSize="@dimen/defFontSize" />
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_size_menu_item" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:layout_width="wrap_content"
@@ -46,70 +38,34 @@
             android:layout_gravity="center" />
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/itemHeightInSettingsMenu"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp">
+        android:layout_height="@dimen/height_menu_item"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/padding_menu_item"
+        android:text="@string/share_app"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_size_menu_item"
+        app:drawableRightCompat="@drawable/ic_share" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/share_app"
-            android:textSize="@dimen/defFontSize" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_share" />
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/itemHeightInSettingsMenu"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp">
+        android:layout_height="@dimen/height_menu_item"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/padding_menu_item"
+        android:text="@string/write_to_support"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_size_menu_item"
+        app:drawableRightCompat="@drawable/ic_support" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/write_to_support"
-            android:textSize="@dimen/defFontSize" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_support" />
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/itemHeightInSettingsMenu"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/terms_of_use"
-            android:textSize="@dimen/defFontSize" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_arrow_right" />
-    </LinearLayout>
+        android:layout_height="@dimen/height_menu_item"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/padding_menu_item"
+        android:text="@string/terms_of_use"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_size_menu_item"
+        app:drawableRightCompat="@drawable/ic_arrow_right" />
 
 </LinearLayout>

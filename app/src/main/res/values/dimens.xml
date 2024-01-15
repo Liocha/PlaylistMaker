@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="defFontSize">16sp</dimen>
-    <dimen name="itemHeightInSettingsMenu">61dp</dimen>
+    <dimen name="font_size_menu_item">16sp</dimen>
+    <dimen name="height_menu_item">61dp</dimen>
+    <dimen name="corner_radius">16dp</dimen>
+    <dimen name="padding_menu_item">16dp</dimen>
 </resources>
