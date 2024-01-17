@@ -20,8 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/blue_bg"
+            android:fontFamily="@font/ys_display_medium"
             android:text="@string/title"
             android:textColor="@color/white"
+            android:textFontWeight="500"
             android:textSize="22sp" />
     </LinearLayout>
 
