@@ -35,51 +35,26 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/search_btn"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            style="@style/MainButtonStyle"
             android:text="@string/search"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            app:backgroundTint="@color/white"
-            app:cornerRadius="@dimen/corner_radius"
             app:icon="@drawable/ic_search"
-            app:iconGravity="textStart"
-            app:iconPadding="8dp"
             app:iconTint="@color/black_ic" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/media_btn"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            style="@style/MainButtonStyle"
             android:layout_marginTop="16dp"
-            android:layout_weight="1"
             android:text="@string/media"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            app:backgroundTint="@color/white"
-            app:cornerRadius="@dimen/corner_radius"
             app:icon="@drawable/ic_media"
-            app:iconGravity="textStart"
-            app:iconPadding="8dp"
             app:iconTint="@color/black_ic" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/settings_btn"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            style="@style/MainButtonStyle"
             android:layout_marginTop="16dp"
-            android:layout_weight="1"
             android:text="@string/settings"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            app:backgroundTint="@color/white"
-            app:cornerRadius="@dimen/corner_radius"
             app:icon="@drawable/ic_settings"
-            app:iconGravity="textStart"
-            app:iconPadding="8dp"
             app:iconTint="@color/black_ic" />
-
 
     </LinearLayout>
 
