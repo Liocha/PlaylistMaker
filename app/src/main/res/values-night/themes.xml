@@ -11,6 +11,9 @@
         <item name="colorPrimary">@color/yp_white</item>
         <item name="android:textColor">@color/yp_white</item>
     </style>
+    <style name="Activity.Search.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
+        <item name="iconTint">@color/yp_black</item>
+    </style>
 </resources>
 
 

@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/settings_header"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:drawablePadding="24dp"
         android:fontFamily="@font/ys_display_medium"
