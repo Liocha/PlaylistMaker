@@ -40,16 +40,19 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/btn_share_app"
         style="@style/SettingsMenuItemStyle"
         android:text="@string/share_app"
         app:drawableRightCompat="@drawable/ic_share" />
 
     <TextView
+        android:id="@+id/btn_write_to_support"
         style="@style/SettingsMenuItemStyle"
         android:text="@string/write_to_support"
         app:drawableRightCompat="@drawable/ic_support" />
 
     <TextView
+        android:id="@+id/btn_terms_of_use"
         style="@style/SettingsMenuItemStyle"
         android:text="@string/terms_of_use"
         app:drawableRightCompat="@drawable/ic_arrow_right" />
