@@ -9,7 +9,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class SearchActivity : AppCompatActivity() {
@@ -21,7 +20,7 @@ class SearchActivity : AppCompatActivity() {
 
         searchInput = findViewById(R.id.search_input)
         val searchClearButton = findViewById<ImageView>(R.id.search_clear_btn)
-        val btnBack = findViewById<TextView>(R.id.search_header)
+        val btnBack = findViewById<ImageView>(R.id.btn_back)
 
 
         btnBack.setOnClickListener {
