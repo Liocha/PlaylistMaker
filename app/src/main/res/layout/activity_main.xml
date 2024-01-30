@@ -7,23 +7,15 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal"
+        android:fontFamily="@font/ys_display_medium"
         android:paddingHorizontal="16dp"
-        android:paddingTop="12dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/ys_display_medium"
-            android:text="@string/title"
-            android:textFontWeight="500"
-            android:textSize="22sp" />
-    </LinearLayout>
-
+        android:paddingTop="14dp"
+        android:text="@string/title"
+        android:textFontWeight="500"
+        android:textSize="22sp" />
 
     <LinearLayout
         android:layout_width="match_parent"

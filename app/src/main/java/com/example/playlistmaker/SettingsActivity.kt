@@ -14,8 +14,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val btnBack = findViewById<ImageButton>(R.id.btn_back)
         btnBack.setOnClickListener {
-            val displayIntent = Intent(this, MainActivity::class.java)
-            startActivity(displayIntent)
+            finish()
         }
 
         val btnShareApp = findViewById<TextView>(R.id.btn_share_app)
@@ -31,15 +30,14 @@ class SettingsActivity : AppCompatActivity() {
 
         val btnWriteToSupport = findViewById<TextView>(R.id.btn_write_to_support)
         btnWriteToSupport.setOnClickListener() {
-            val sendIntent = Intent().apply {
+            Intent().apply {
                 action = Intent.ACTION_SENDTO
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.default_email)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.default_email_subject))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.default_email_text))
+                startActivity(Intent.createChooser(this, null))
             }
-            val writeToSupportIntent = Intent.createChooser(sendIntent, null)
-            startActivity(writeToSupportIntent)
         }
 
         val btnTermsOfUse = findViewById<TextView>(R.id.btn_terms_of_use)

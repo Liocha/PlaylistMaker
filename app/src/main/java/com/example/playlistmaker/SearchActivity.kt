@@ -1,18 +1,17 @@
 package com.example.playlistmaker
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
-    var inputSearchText: String = DEF_TEXT_IN_SEARCH_FIELD
+    private var inputSearchText: String = DEF_TEXT_IN_SEARCH_FIELD
     private lateinit var searchInput: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +23,7 @@ class SearchActivity : AppCompatActivity() {
 
 
         btnBack.setOnClickListener {
-            val sendIntent = Intent(this, MainActivity::class.java)
-            startActivity(sendIntent)
+            finish()
         }
 
         searchClearButton.setOnClickListener {
@@ -41,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchClearButton.visibility = searchClearButtonVisibility(s)
+                searchClearButton.isVisible = !s.isNullOrEmpty()
                 inputSearchText = s.toString()
             }
 
@@ -53,20 +51,11 @@ class SearchActivity : AppCompatActivity() {
 
         searchInput.addTextChangedListener(simpleTextWatcher)
 
-
-    }
-
-    private fun searchClearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
     }
 
     companion object {
-        const val CURRENT_TEXT_IN_SEARCH_FIELD = ""
-        const val DEF_TEXT_IN_SEARCH_FIELD = ""
+        private const val CURRENT_TEXT_IN_SEARCH_FIELD = "CURRENT_TEXT_IN_SEARCH_FIELD"
+        private const val DEF_TEXT_IN_SEARCH_FIELD = ""
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
