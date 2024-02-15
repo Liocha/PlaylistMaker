@@ -3,5 +3,18 @@
     <style name="EditSearchStyle">
         <item name="android:textColorHint">@color/yp_black</item>
         <item name="android:textColor">@color/yp_black</item>
+        <item name="android:drawableTint">@color/yp_black</item>
+    </style>
+    <style name="ItemSearchSubText">
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:drawableTint">@color/yp_white</item>
+    </style>
+
+    <style name="SearchCleatTintColor">
+        <item name="tint">@color/yp_black</item>
     </style>
 </resources>

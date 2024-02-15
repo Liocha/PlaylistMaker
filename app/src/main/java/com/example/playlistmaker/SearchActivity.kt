@@ -9,6 +9,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.data.Datasource
 
 class SearchActivity : AppCompatActivity() {
     private var inputSearchText: String = DEF_TEXT_IN_SEARCH_FIELD
@@ -51,6 +54,14 @@ class SearchActivity : AppCompatActivity() {
 
         searchInput.addTextChangedListener(simpleTextWatcher)
 
+        val trackList = Datasource().loadTracks()
+        val searchItemsView : RecyclerView = findViewById(R.id.list_of_search_items)
+
+        searchItemsView.apply {
+            layoutManager = LinearLayoutManager(this@SearchActivity)
+            adapter = SearchItemAdapter(trackList)
+        }
+
     }
 
     companion object {
@@ -70,5 +81,7 @@ class SearchActivity : AppCompatActivity() {
         searchInput.setText(inputSearchText)
         searchInput.setSelection(inputSearchText.length)
     }
+
+
 
 }

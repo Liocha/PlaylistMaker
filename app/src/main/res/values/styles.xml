@@ -32,4 +32,16 @@
         <item name="android:textColor">@color/yp_black</item>
         <item name="android:fontFamily">ys_display_regular</item>
     </style>
+
+    <style name="ItemSearchSubText">
+        <item name="android:textColor">@color/yp_text_gray</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:layout_marginTop">1dp</item>
+    </style>
+
+    <style name="SearchCleatTintColor">
+        <item name="tint">@color/yp_text_gray</item>
+    </style>
 </resources>

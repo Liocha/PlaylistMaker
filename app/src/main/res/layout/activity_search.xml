@@ -60,6 +60,7 @@
             android:maxLines="1" />
 
         <ImageView
+            style="@style/SearchCleatTintColor"
             android:id="@+id/search_clear_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +69,13 @@
             android:contentDescription="@string/search_clear_description"
             android:paddingStart="12dp"
             android:src="@drawable/ic_clear"
-            android:visibility="gone" />
+            android:visibility="gone"
+            />
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_of_search_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
