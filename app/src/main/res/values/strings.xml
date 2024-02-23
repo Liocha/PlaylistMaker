@@ -16,4 +16,9 @@
     <string name="search_input_hint">Поиск</string>
     <string name="search_clear_description">Очистить поисковый запрос</string>
     <string name="btn_back_description">Вернуться назад</string>
+    <string name="refresh_search">Обновить</string>
+    <string name="retry_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="connectivity_issues">Проблемы со связью</string>
+    <string name="empty_search_placeholder">Ничего не нашлось</string>
+    <string name="server_response_code">Код ответа сервера: %1$s</string>
 </resources>

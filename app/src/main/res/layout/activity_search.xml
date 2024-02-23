@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -55,13 +56,15 @@
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="8dp"
             android:hint="@string/search_input_hint"
+            android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:singleLine="true" />
 
         <ImageView
-            style="@style/SearchCleatTintColor"
             android:id="@+id/search_clear_btn"
+            style="@style/SearchCleatTintColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -69,13 +72,53 @@
             android:contentDescription="@string/search_clear_description"
             android:paddingStart="12dp"
             android:src="@drawable/ic_clear"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/empty_search_placeholder"
+        style="@style/ConnectionErrorPlaceholder"
+        android:layout_marginTop="100dp"
+        android:drawablePadding="16dp"
+        android:text="@string/empty_search_placeholder"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/empty_search_placeholder" />
+
+    <LinearLayout
+        android:id="@+id/connection_error_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/ConnectionErrorPlaceholder"
+            android:layout_marginTop="100dp"
+            android:drawablePadding="16dp"
+            android:text="@string/connectivity_issues"
+            app:drawableTopCompat="@drawable/connection_error_placeholder" />
+
+        <TextView
+            style="@style/ConnectionErrorPlaceholder"
+            android:layout_marginTop="40dp"
+            android:maxWidth="300dp"
+            android:text="@string/retry_connection" />
+
+        <Button
+            android:id="@+id/btn_refresh_search"
+            style="@style/RefreshButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:text="@string/refresh_search" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_of_search_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 </LinearLayout>

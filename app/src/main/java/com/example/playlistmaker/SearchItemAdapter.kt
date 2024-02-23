@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.modal.Track
+import com.example.playlistmaker.data.api.model.Track
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class SearchItemAdapter(private val dataSet: Array<Track>) :
+
+class SearchItemAdapter(private val dataSet: MutableList<Track>) :
     Adapter<SearchItemAdapter.SearchItemViewHolder>() {
 
     class SearchItemViewHolder(rootView: View) : ViewHolder(rootView) {
@@ -30,7 +33,7 @@ class SearchItemAdapter(private val dataSet: Array<Track>) :
         fun bind(track: Track) {
             artistName.text = track.artistName
             trackName.text = track.trackName
-            trackTime.text = track.trackTime
+            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
             Glide.with(artworkUrl100).load(track.artworkUrl100).centerCrop().transform(
                 RoundedCorners(radiusInPx)
             )
