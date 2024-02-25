@@ -51,6 +51,7 @@
         <item name="android:textColor">@color/yp_white</item>
         <item name="android:textSize">14sp</item>
         <item name="cornerRadius">54dp</item>
+        <item name="android:textFontWeight">500</item>
     </style>
 
     <style name="ConnectionErrorPlaceholder">
