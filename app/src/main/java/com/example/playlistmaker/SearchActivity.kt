@@ -79,7 +79,10 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-
+                if (s.toString().isEmpty()) {
+                    tracks.clear()
+                    searchItemAdapter.notifyDataSetChanged()
+                }
             }
 
         }
