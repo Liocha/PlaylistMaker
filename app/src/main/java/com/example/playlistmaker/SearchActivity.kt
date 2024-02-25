@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -28,12 +27,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private val iTunesBaseUrl = "https://itunes.apple.com"
-    private var retrofit = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private var iTunesService = retrofit.create(ITunesService::class.java)
+    private val iTunesService = retrofit.create(ITunesService::class.java)
 
     private var inputSearchText: String = DEF_TEXT_IN_SEARCH_FIELD
     private lateinit var searchInput: EditText
@@ -42,7 +41,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var connectionErrorPlaceholder: ViewGroup
     private lateinit var btnRefreshSearch: Button
 
-    private var tracks = mutableListOf<Track>()
+    private val tracks = mutableListOf<Track>()
     private val searchItemAdapter = SearchItemAdapter(tracks)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,7 +134,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search(text: String) {
-        Log.d("SEARCH_SEARCH", text)
         iTunesService.search(text).enqueue(object : Callback<Response> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {

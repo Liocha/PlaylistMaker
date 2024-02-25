@@ -79,8 +79,8 @@
     <TextView
         android:id="@+id/empty_search_placeholder"
         style="@style/ConnectionErrorPlaceholder"
-        android:layout_marginTop="100dp"
-        android:drawablePadding="16dp"
+        android:layout_marginTop="@dimen/placeholder_message_top_margin"
+        android:drawablePadding="@dimen/placeholder_icon_message_padding"
         android:text="@string/empty_search_placeholder"
         android:visibility="gone"
         app:drawableTopCompat="@drawable/empty_search_placeholder" />
@@ -94,8 +94,8 @@
 
         <TextView
             style="@style/ConnectionErrorPlaceholder"
-            android:layout_marginTop="100dp"
-            android:drawablePadding="16dp"
+            android:layout_marginTop="@dimen/placeholder_message_top_margin"
+            android:drawablePadding="@dimen/placeholder_icon_message_padding"
             android:text="@string/connectivity_issues"
             app:drawableTopCompat="@drawable/connection_error_placeholder" />
 
