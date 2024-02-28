@@ -1,6 +1,6 @@
 package com.example.playlistmaker.data
 
-import com.example.playlistmaker.modal.Track
+import com.example.playlistmaker.domain.Track
 
 class Datasource() {
     fun loadTracks(): Array<Track> {

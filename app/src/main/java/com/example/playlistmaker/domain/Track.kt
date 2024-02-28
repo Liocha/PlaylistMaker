@@ -1,4 +1,4 @@
-package com.example.playlistmaker.modal
+package com.example.playlistmaker.domain
 
 data class Track(
     val trackName: String,
