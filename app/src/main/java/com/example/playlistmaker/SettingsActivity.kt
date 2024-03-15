@@ -6,18 +6,31 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val sharedPrefs = getSharedPreferences(PLAYLISTMAKER_PREFERENCES, MODE_PRIVATE)
+
         val btnBack = findViewById<ImageButton>(R.id.btn_back)
+        val btnShareApp = findViewById<TextView>(R.id.btn_share_app)
+        val btnWriteToSupport = findViewById<TextView>(R.id.btn_write_to_support)
+        val btnTermsOfUse = findViewById<TextView>(R.id.btn_terms_of_use)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+
         btnBack.setOnClickListener {
             finish()
         }
 
-        val btnShareApp = findViewById<TextView>(R.id.btn_share_app)
+        themeSwitcher.setChecked((applicationContext as App).darkTheme)
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            sharedPrefs.edit().putBoolean(DARK_THEME_ENABLED_KEY, checked).apply()
+        }
+
         btnShareApp.setOnClickListener {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -28,7 +41,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(shareAppIntent)
         }
 
-        val btnWriteToSupport = findViewById<TextView>(R.id.btn_write_to_support)
+
         btnWriteToSupport.setOnClickListener() {
             Intent().apply {
                 action = Intent.ACTION_SENDTO
@@ -40,7 +53,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val btnTermsOfUse = findViewById<TextView>(R.id.btn_terms_of_use)
+
         btnTermsOfUse.setOnClickListener {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_VIEW
