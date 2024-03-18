@@ -21,4 +21,6 @@
     <string name="connectivity_issues">Проблемы со связью</string>
     <string name="empty_search_placeholder">Ничего не нашлось</string>
     <string name="server_response_code">Код ответа сервера: %1$s</string>
+    <string name="search_history_title">Вы искали</string>
+    <string name="clear_search_history">Очистить историю</string>
 </resources>
