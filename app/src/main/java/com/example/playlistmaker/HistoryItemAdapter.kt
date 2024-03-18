@@ -25,8 +25,8 @@ class HistoryItemAdapter(private val dataSet: MutableList<Track>) :
             rootView.context.resources.getDimension(R.dimen.corner_radius_search_item_img).toInt()
 
         init {
-            artistName = rootView.findViewById(R.id.track_name)
-            trackName = rootView.findViewById(R.id.artist_name)
+            trackName = rootView.findViewById(R.id.track_name)
+            artistName = rootView.findViewById(R.id.artist_name)
             trackTime = rootView.findViewById(R.id.track_time)
             artworkUrl100 = rootView.findViewById(R.id.artwork_url_100)
         }

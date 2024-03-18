@@ -101,8 +101,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString().isEmpty()) {
-                    tracks.clear()
-                    searchItemAdapter.notifyDataSetChanged()
+                    clearSearch()
                 }
             }
 
@@ -158,6 +157,8 @@ class SearchActivity : AppCompatActivity() {
             }
             historyItemAdapter.notifyDataSetChanged()
             searchHistoryWidget.visibility = View.VISIBLE
+            connectionErrorPlaceholder.isVisible = false
+            emptySearchPlaceholder.isVisible = false
         }
     }
 
@@ -193,6 +194,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search(text: String) {
+        if (text.isEmpty()) {
+            showToast(getString(R.string.reported_empty_search_request))
+            return
+        }
         iTunesService.search(text).enqueue(object : Callback<Response> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {

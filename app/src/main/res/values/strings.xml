@@ -23,4 +23,5 @@
     <string name="server_response_code">Код ответа сервера: %1$s</string>
     <string name="search_history_title">Вы искали</string>
     <string name="clear_search_history">Очистить историю</string>
+    <string name="reported_empty_search_request">Поисковой запрос не может быть пустой</string>
 </resources>
