@@ -28,7 +28,7 @@
         android:maxWidth="250dp"
         android:maxLines="1"
         android:textSize="16sp"
-        tools:text="Elvis Aaron Presley" />
+        tools:text="Can't Help Falling in Love" />
 
     <TextView
         android:id="@+id/artist_name"
@@ -39,7 +39,7 @@
         android:ellipsize="end"
         android:maxWidth="250dp"
         android:maxLines="1"
-        tools:text="Can't Help Falling in Love" />
+        tools:text="Elvis Presley" />
 
     <TextView
         android:id="@+id/track_time"

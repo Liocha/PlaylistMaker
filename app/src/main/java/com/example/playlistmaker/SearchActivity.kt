@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.data.SearchHistory
 import com.example.playlistmaker.data.api.ITunesService
 import com.example.playlistmaker.data.api.model.Response
 import com.example.playlistmaker.data.api.model.Track
@@ -40,9 +42,17 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var emptySearchPlaceholder: TextView
     private lateinit var connectionErrorPlaceholder: ViewGroup
     private lateinit var btnRefreshSearch: Button
+    private lateinit var searchHistoryWidget: ViewGroup
+    private lateinit var listHistoryItems: RecyclerView
+
 
     private val tracks = mutableListOf<Track>()
     private val searchItemAdapter = SearchItemAdapter(tracks)
+    private lateinit var historyClearBtn: Button
+
+    private lateinit var searchHistory: SearchHistory
+    private val history = mutableListOf<Track>()
+    private val historyItemAdapter = HistoryItemAdapter(history)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -53,6 +63,14 @@ class SearchActivity : AppCompatActivity() {
         emptySearchPlaceholder = findViewById(R.id.empty_search_placeholder)
         connectionErrorPlaceholder = findViewById(R.id.connection_error_placeholder)
         btnRefreshSearch = findViewById(R.id.btn_refresh_search)
+
+        searchHistory = SearchHistory(
+            this@SearchActivity.getSharedPreferences(
+                PLAYLISTMAKER_PREFERENCES,
+                MODE_PRIVATE
+            )
+        )
+        history.addAll(searchHistory.tracks())
 
         btnBack.setOnClickListener {
             finish()
@@ -74,13 +92,16 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchClearButton.isVisible = !s.isNullOrEmpty()
                 inputSearchText = s.toString()
-
+                if (searchInput.hasFocus() && s?.isEmpty() == true) {
+                    showHistoryWidget()
+                } else {
+                    hideHistoryWidget()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString().isEmpty()) {
-                    tracks.clear()
-                    searchItemAdapter.notifyDataSetChanged()
+                    clearSearch()
                 }
             }
 
@@ -105,7 +126,46 @@ class SearchActivity : AppCompatActivity() {
             search(inputSearchText)
         }
 
+        searchHistoryWidget = findViewById(R.id.search_history_widget)
+        listHistoryItems = findViewById(R.id.list_of_history_items)
+        historyClearBtn = findViewById(R.id.history_clear_btn)
+
+        listHistoryItems.apply {
+            layoutManager = LinearLayoutManager(this@SearchActivity)
+            adapter = historyItemAdapter
+        }
+
+        historyClearBtn.setOnClickListener {
+            searchHistory.clear()
+            hideHistoryWidget()
+        }
+
+        searchInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchInput.text.isEmpty()) {
+                showHistoryWidget()
+            } else {
+                hideHistoryWidget()
+            }
+        }
     }
+
+    private fun showHistoryWidget() {
+        if (searchHistory.isNotEmpty()) {
+            history.apply {
+                clear()
+                addAll(searchHistory.tracks())
+            }
+            historyItemAdapter.notifyDataSetChanged()
+            searchHistoryWidget.visibility = View.VISIBLE
+            connectionErrorPlaceholder.isVisible = false
+            emptySearchPlaceholder.isVisible = false
+        }
+    }
+
+    private fun hideHistoryWidget() {
+        searchHistoryWidget.visibility = View.GONE
+    }
+
 
     private fun clearSearch() {
         emptySearchPlaceholder.isVisible = false
@@ -134,6 +194,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search(text: String) {
+        if (text.isEmpty()) {
+            showToast(getString(R.string.reported_empty_search_request))
+            return
+        }
         iTunesService.search(text).enqueue(object : Callback<Response> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
