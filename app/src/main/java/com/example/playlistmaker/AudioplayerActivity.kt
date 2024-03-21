@@ -2,12 +2,16 @@ package com.example.playlistmaker
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Group
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.data.api.model.Track
@@ -22,6 +26,11 @@ class AudioplayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_audioplayer)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         val btnBack = findViewById<ImageButton>(R.id.btn_back)
         btnBack.setOnClickListener {
             finish()
@@ -39,12 +48,17 @@ class AudioplayerActivity : AppCompatActivity() {
             val countryTextView = findViewById<TextView>(R.id.countryValue)
             val coverImageView = findViewById<ImageView>(R.id.cover)
             val radiusInPx =
-                this.resources.getDimension(R.dimen.corner_radius_search_item_img).toInt()
+                this.resources.getDimension(R.dimen.corner_radius_search_cover_img).toInt()
 
             fun getCoverArtwork() = it.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 
             val formatter = DateTimeFormatter.ISO_DATE_TIME
             val releaseDate = LocalDateTime.parse(it.releaseDate, formatter)
+
+            val collectionNameGroup = findViewById<Group>(R.id.collectionNameGroup)
+            if ( it.collectionName.isEmpty()) {
+                collectionNameGroup.visibility = View.GONE
+            }
 
             artistNameTextView.text = it.artistName
             trackNameTextView.text = it.trackName

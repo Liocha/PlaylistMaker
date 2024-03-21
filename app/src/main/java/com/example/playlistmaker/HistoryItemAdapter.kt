@@ -1,10 +1,12 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
@@ -40,12 +42,19 @@ class HistoryItemAdapter(private val dataSet: MutableList<Track>) :
                 RoundedCorners(radiusInPx)
             )
                 .placeholder(R.drawable.placeholder_artwork).into(artworkUrl100)
+
+            itemView.setOnClickListener {
+                val displayIntent = Intent(itemView.context, AudioplayerActivity::class.java).apply {
+                    putExtra("TRACK", track)
+                }
+                ContextCompat.startActivity(itemView.context, displayIntent, null)
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.search_item, parent, false)
-        return HistoryItemAdapter.HistoryItemViewHolder(view)
+        return HistoryItemViewHolder(view)
     }
 
     override fun getItemCount() = dataSet.size

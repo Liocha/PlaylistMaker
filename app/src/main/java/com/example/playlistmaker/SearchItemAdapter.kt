@@ -45,10 +45,11 @@ class SearchItemAdapter(private val dataSet: MutableList<Track>) :
                 .placeholder(R.drawable.placeholder_artwork).into(artworkUrl100)
 
             itemView.setOnClickListener {
-               // SearchHistory(itemView.context.getSharedPreferences(PLAYLISTMAKER_PREFERENCES, MODE_PRIVATE) ).addTrack(track)
-                val displayIntent = Intent(itemView.context, AudioplayerActivity::class.java).apply {
-                    putExtra("TRACK", track)
-                }
+//                SearchHistory(itemView.context.getSharedPreferences(PLAYLISTMAKER_PREFERENCES, MODE_PRIVATE) ).addTrack(track)
+                val displayIntent =
+                    Intent(itemView.context, AudioplayerActivity::class.java).apply {
+                        putExtra("TRACK", track)
+                    }
                 startActivity(itemView.context, displayIntent, null)
             }
         }
