@@ -1,11 +1,13 @@
 package com.example.playlistmaker
 
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
@@ -43,8 +45,14 @@ class SearchItemAdapter(private val dataSet: MutableList<Track>) :
                 RoundedCorners(radiusInPx)
             )
                 .placeholder(R.drawable.placeholder_artwork).into(artworkUrl100)
+
             itemView.setOnClickListener {
                 SearchHistory(itemView.context.getSharedPreferences(PLAYLISTMAKER_PREFERENCES, MODE_PRIVATE) ).addTrack(track)
+                val displayIntent =
+                    Intent(itemView.context, AudioplayerActivity::class.java).apply {
+                        putExtra("TRACK", track)
+                    }
+                startActivity(itemView.context, displayIntent, null)
             }
         }
     }

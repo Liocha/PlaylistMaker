@@ -24,4 +24,10 @@
     <string name="search_history_title">Вы искали</string>
     <string name="clear_search_history">Очистить историю</string>
     <string name="reported_empty_search_request">Поисковой запрос не может быть пустой</string>
+    <string name="country_label">Страна</string>
+    <string name="primary_genre_name_label">Жанр</string>
+    <string name="release_date_label">Год</string>
+    <string name="collection_name_label">Альбом</string>
+    <string name="track_time_label">Длительность</string>
+    <string name="current_track_time_placeholder">9:99</string>
 </resources>
