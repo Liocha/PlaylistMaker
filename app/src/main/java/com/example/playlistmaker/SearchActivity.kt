@@ -2,7 +2,10 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -12,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +32,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
+
     private val iTunesBaseUrl = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
@@ -44,15 +49,20 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var btnRefreshSearch: Button
     private lateinit var searchHistoryWidget: ViewGroup
     private lateinit var listHistoryItems: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
 
     private val tracks = mutableListOf<Track>()
-    private val searchItemAdapter = SearchItemAdapter(tracks)
+    private lateinit var searchItemAdapter: SearchItemAdapter
     private lateinit var historyClearBtn: Button
 
     private lateinit var searchHistory: SearchHistory
     private val history = mutableListOf<Track>()
-    private val historyItemAdapter = HistoryItemAdapter(history)
+    private lateinit var historyItemAdapter: HistoryItemAdapter
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var isClickAllowed = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -63,6 +73,7 @@ class SearchActivity : AppCompatActivity() {
         emptySearchPlaceholder = findViewById(R.id.empty_search_placeholder)
         connectionErrorPlaceholder = findViewById(R.id.connection_error_placeholder)
         btnRefreshSearch = findViewById(R.id.btn_refresh_search)
+        progressBar = findViewById(R.id.progress_bar)
 
         searchHistory = SearchHistory(
             this@SearchActivity.getSharedPreferences(
@@ -84,6 +95,7 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
         }
 
+
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -92,6 +104,8 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchClearButton.isVisible = !s.isNullOrEmpty()
                 inputSearchText = s.toString()
+                debounceSearchQuery()
+
                 if (searchInput.hasFocus() && s?.isEmpty() == true) {
                     showHistoryWidget()
                 } else {
@@ -104,11 +118,30 @@ class SearchActivity : AppCompatActivity() {
                     clearSearch()
                 }
             }
-
         }
 
         searchInput.addTextChangedListener(simpleTextWatcher)
         searchItemsView = findViewById(R.id.list_of_search_items)
+
+        historyItemAdapter = HistoryItemAdapter(history) {
+            if (clickDebounce()) {
+                val displayIntent = Intent(this, AudioplayerActivity::class.java).apply {
+                    putExtra("TRACK", history[it])
+                }
+                startActivity(displayIntent)
+            }
+        }
+
+        searchItemAdapter = SearchItemAdapter(tracks) {
+            if (clickDebounce()) {
+                searchHistory.addTrack(tracks[it])
+                val displayIntent =
+                    Intent(this, AudioplayerActivity::class.java).apply {
+                        putExtra("TRACK", tracks[it])
+                    }
+                startActivity(displayIntent)
+            }
+        }
 
         searchItemsView.apply {
             layoutManager = LinearLayoutManager(this@SearchActivity)
@@ -117,13 +150,13 @@ class SearchActivity : AppCompatActivity() {
 
         searchInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search(inputSearchText)
+                search()
             }
             false
         }
 
         btnRefreshSearch.setOnClickListener {
-            search(inputSearchText)
+            search()
         }
 
         searchHistoryWidget = findViewById(R.id.search_history_widget)
@@ -147,6 +180,22 @@ class SearchActivity : AppCompatActivity() {
                 hideHistoryWidget()
             }
         }
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            mainHandler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private val searchRunnable = Runnable { search() }
+
+    private fun debounceSearchQuery() {
+        mainHandler.removeCallbacks(searchRunnable)
+        mainHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun showHistoryWidget() {
@@ -178,6 +227,8 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val CURRENT_TEXT_IN_SEARCH_FIELD = "CURRENT_TEXT_IN_SEARCH_FIELD"
         private const val DEF_TEXT_IN_SEARCH_FIELD = ""
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -193,16 +244,17 @@ class SearchActivity : AppCompatActivity() {
         searchInput.setSelection(inputSearchText.length)
     }
 
-    private fun search(text: String) {
-        if (text.isEmpty()) {
-            showToast(getString(R.string.reported_empty_search_request))
+    private fun search() {
+        if (inputSearchText.isEmpty()) {
             return
         }
-        iTunesService.search(text).enqueue(object : Callback<Response> {
+        emptySearchPlaceholder.isVisible = false
+        connectionErrorPlaceholder.isVisible = false
+        progressBar.isVisible = true
+        iTunesService.search(inputSearchText).enqueue(object : Callback<Response> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                emptySearchPlaceholder.isVisible = false
-                connectionErrorPlaceholder.isVisible = false
+                progressBar.isVisible = false
                 if (response.isSuccessful) {
                     tracks.clear()
                     val result: List<Track> = response.body()?.results ?: mutableListOf()

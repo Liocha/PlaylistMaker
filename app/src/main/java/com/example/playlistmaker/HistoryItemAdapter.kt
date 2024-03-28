@@ -1,12 +1,10 @@
 package com.example.playlistmaker
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
@@ -15,7 +13,10 @@ import com.example.playlistmaker.data.api.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class HistoryItemAdapter(private val dataSet: MutableList<Track>) :
+class HistoryItemAdapter(
+    private val dataSet: MutableList<Track>,
+    private val onClick: (Int) -> Unit
+) :
     Adapter<HistoryItemAdapter.HistoryItemViewHolder>() {
 
     class HistoryItemViewHolder(rootView: View) : ViewHolder(rootView) {
@@ -42,13 +43,6 @@ class HistoryItemAdapter(private val dataSet: MutableList<Track>) :
                 RoundedCorners(radiusInPx)
             )
                 .placeholder(R.drawable.placeholder_artwork).into(artworkUrl100)
-
-            itemView.setOnClickListener {
-                val displayIntent = Intent(itemView.context, AudioplayerActivity::class.java).apply {
-                    putExtra("TRACK", track)
-                }
-                ContextCompat.startActivity(itemView.context, displayIntent, null)
-            }
         }
     }
 
@@ -61,5 +55,6 @@ class HistoryItemAdapter(private val dataSet: MutableList<Track>) :
 
     override fun onBindViewHolder(holder: HistoryItemViewHolder, position: Int) {
         holder.bind(dataSet[position])
+        holder.itemView.setOnClickListener { onClick(position) }
     }
 }
