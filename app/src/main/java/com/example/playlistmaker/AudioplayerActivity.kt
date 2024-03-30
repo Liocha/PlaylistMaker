@@ -1,7 +1,10 @@
 package com.example.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -21,6 +24,26 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class AudioplayerActivity : AppCompatActivity() {
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val STATE_PLAYBACK_COMPLETED = 4
+        private const val DEFAULT_TRACK_TIME = "00:00"
+    }
+
+    private lateinit var playButton: ImageButton
+
+    private var playerState = STATE_DEFAULT
+    private var mediaPlayer = MediaPlayer()
+    private lateinit var trackDownloadUrl: String
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private lateinit var currentTrackTime: TextView
+    private lateinit var currentPositionSetter: Runnable
+
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +79,7 @@ class AudioplayerActivity : AppCompatActivity() {
             val releaseDate = LocalDateTime.parse(it.releaseDate, formatter)
 
             val collectionNameGroup = findViewById<Group>(R.id.collectionNameGroup)
-            if ( it.collectionName.isEmpty()) {
+            if (it.collectionName.isEmpty()) {
                 collectionNameGroup.visibility = View.GONE
             }
 
@@ -74,6 +97,84 @@ class AudioplayerActivity : AppCompatActivity() {
                 .placeholder(R.drawable.placeholder_artwork).into(coverImageView)
 
         }
+        playButton = findViewById(R.id.btnPlay)
+        trackDownloadUrl = track?.previewUrl.toString()
+        preparePlayer()
+        playButton.setOnClickListener { playbackControl() }
+        currentTrackTime = findViewById(R.id.currentTrackTime)
+
+        currentPositionSetter = object : Runnable {
+            override fun run() {
+                mainHandler.postDelayed(this, 1000)
+                if (playerState == STATE_PLAYING) {
+                    setCurrentPosition()
+                }
+            }
+        }
+        setCurrentPosition(DEFAULT_TRACK_TIME)
+        mediaPlayer.setOnCompletionListener {
+            playButton.setImageResource(R.drawable.play_button)
+            playerState = STATE_PLAYBACK_COMPLETED
+            mainHandler.removeCallbacks(currentPositionSetter)
+            setCurrentPosition(DEFAULT_TRACK_TIME)
+        }
+    }
+
+    private fun setCurrentPosition(customValue: String? = null) {
+        currentTrackTime.text = customValue
+            ?: SimpleDateFormat(
+                "mm:ss",
+                Locale.getDefault()
+            ).format(mediaPlayer.currentPosition)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainHandler.removeCallbacks(currentPositionSetter)
+        mediaPlayer.release()
+    }
+
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(trackDownloadUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            playerState = STATE_PREPARED
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playerState = STATE_PLAYING
+        playButton.setImageResource(R.drawable.pause_button)
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        playerState = STATE_PAUSED
+        playButton.setImageResource(R.drawable.play_button)
+        mainHandler.removeCallbacks(currentPositionSetter)
+    }
+
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED, STATE_PLAYBACK_COMPLETED -> {
+                startPlayer()
+                mainHandler.postDelayed(currentPositionSetter, 200)
+            }
+        }
+
     }
 }
 
