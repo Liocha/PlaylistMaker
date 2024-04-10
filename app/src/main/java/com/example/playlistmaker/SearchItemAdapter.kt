@@ -1,25 +1,25 @@
 package com.example.playlistmaker
 
-import android.content.Context.MODE_PRIVATE
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.data.SearchHistory
 import com.example.playlistmaker.data.api.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class SearchItemAdapter(private val dataSet: MutableList<Track>) :
+class SearchItemAdapter(
+    private val dataSet: MutableList<Track>,
+    private val onClick: (Int) -> Unit
+) :
     Adapter<SearchItemAdapter.SearchItemViewHolder>() {
+
 
     class SearchItemViewHolder(rootView: View) : ViewHolder(rootView) {
         private val artistName: TextView
@@ -45,16 +45,8 @@ class SearchItemAdapter(private val dataSet: MutableList<Track>) :
                 RoundedCorners(radiusInPx)
             )
                 .placeholder(R.drawable.placeholder_artwork).into(artworkUrl100)
-
-            itemView.setOnClickListener {
-                SearchHistory(itemView.context.getSharedPreferences(PLAYLISTMAKER_PREFERENCES, MODE_PRIVATE) ).addTrack(track)
-                val displayIntent =
-                    Intent(itemView.context, AudioplayerActivity::class.java).apply {
-                        putExtra("TRACK", track)
-                    }
-                startActivity(itemView.context, displayIntent, null)
-            }
         }
+
     }
 
     override fun onCreateViewHolder(
@@ -67,6 +59,10 @@ class SearchItemAdapter(private val dataSet: MutableList<Track>) :
 
     override fun onBindViewHolder(holder: SearchItemViewHolder, position: Int) {
         holder.bind(dataSet[position])
+        holder.itemView.setOnClickListener {
+            onClick(position)
+        }
+
     }
 
     override fun getItemCount() = dataSet.size
