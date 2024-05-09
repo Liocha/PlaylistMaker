@@ -29,5 +29,5 @@
     <string name="release_date_label">Год</string>
     <string name="collection_name_label">Альбом</string>
     <string name="track_time_label">Длительность</string>
-    <string name="current_track_time_placeholder">9:99</string>
+    <string name="current_track_time_placeholder">0:00</string>
 </resources>
