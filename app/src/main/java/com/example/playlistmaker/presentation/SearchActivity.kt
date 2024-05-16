@@ -1,6 +1,5 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -22,24 +21,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.data.SearchHistory
-import com.example.playlistmaker.data.api.ITunesService
-import com.example.playlistmaker.data.api.model.Response
-import com.example.playlistmaker.data.api.model.Track
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.consumer.Consumer
+import com.example.playlistmaker.domain.consumer.ConsumerData
+import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.use_case.implementations.ClearSearchHistoryUseCase
+import com.example.playlistmaker.domain.use_case.implementations.GetSearchHistoryUseCase
+import com.example.playlistmaker.domain.use_case.implementations.SaveSearchHistoryUseCase
 
 class SearchActivity : AppCompatActivity() {
-
-    private val iTunesBaseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesService = retrofit.create(ITunesService::class.java)
+    private val searhTracksUseCase = Creator.provideSearchTracksUseCase()
+    private lateinit var getSearchHistoryUseCase: GetSearchHistoryUseCase
+    private lateinit var saveSearchHistoryUseCase: SaveSearchHistoryUseCase
+    private lateinit var clearSearchHistoryUseCase: ClearSearchHistoryUseCase
 
     private var inputSearchText: String = DEF_TEXT_IN_SEARCH_FIELD
     private lateinit var searchInput: EditText
@@ -51,21 +46,27 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var listHistoryItems: RecyclerView
     private lateinit var progressBar: ProgressBar
 
-
     private val tracks = mutableListOf<Track>()
     private lateinit var searchItemAdapter: SearchItemAdapter
     private lateinit var historyClearBtn: Button
 
-    private lateinit var searchHistory: SearchHistory
     private val history = mutableListOf<Track>()
     private lateinit var historyItemAdapter: HistoryItemAdapter
 
     private val mainHandler = Handler(Looper.getMainLooper())
+    private var currentConsumerRunnable: Runnable? = null
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        getSearchHistoryUseCase =
+            Creator.provideGetSearchHistoryUseCase(this) as GetSearchHistoryUseCase
+        saveSearchHistoryUseCase =
+            Creator.provideSaveSearchHistoryUseCase(this) as SaveSearchHistoryUseCase
+        clearSearchHistoryUseCase =
+            Creator.provideClearSearchHistoryUseCase(this) as ClearSearchHistoryUseCase
 
         searchInput = findViewById(R.id.search_input)
         val searchClearButton = findViewById<ImageView>(R.id.search_clear_btn)
@@ -75,13 +76,8 @@ class SearchActivity : AppCompatActivity() {
         btnRefreshSearch = findViewById(R.id.btn_refresh_search)
         progressBar = findViewById(R.id.progress_bar)
 
-        searchHistory = SearchHistory(
-            this@SearchActivity.getSharedPreferences(
-                PLAYLISTMAKER_PREFERENCES,
-                MODE_PRIVATE
-            )
-        )
-        history.addAll(searchHistory.tracks())
+        history.addAll(getSearchHistoryUseCase.execute())
+
 
         btnBack.setOnClickListener {
             finish()
@@ -134,7 +130,7 @@ class SearchActivity : AppCompatActivity() {
 
         searchItemAdapter = SearchItemAdapter(tracks) {
             if (clickDebounce()) {
-                searchHistory.addTrack(tracks[it])
+                saveSearchHistoryUseCase.execute(tracks[it])
                 val displayIntent =
                     Intent(this, AudioplayerActivity::class.java).apply {
                         putExtra("TRACK", tracks[it])
@@ -169,7 +165,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         historyClearBtn.setOnClickListener {
-            searchHistory.clear()
+            clearSearchHistoryUseCase.execute()
             hideHistoryWidget()
         }
 
@@ -199,10 +195,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistoryWidget() {
-        if (searchHistory.isNotEmpty()) {
+        if (getSearchHistoryUseCase.execute().isNotEmpty()) {
             history.apply {
                 clear()
-                addAll(searchHistory.tracks())
+                addAll(getSearchHistoryUseCase.execute())
             }
             historyItemAdapter.notifyDataSetChanged()
             searchHistoryWidget.visibility = View.VISIBLE
@@ -251,35 +247,51 @@ class SearchActivity : AppCompatActivity() {
         emptySearchPlaceholder.isVisible = false
         connectionErrorPlaceholder.isVisible = false
         progressBar.isVisible = true
-        iTunesService.search(inputSearchText).enqueue(object : Callback<Response> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                progressBar.isVisible = false
-                if (response.isSuccessful) {
-                    tracks.clear()
-                    val result: List<Track> = response.body()?.results ?: mutableListOf()
-                    tracks.addAll(result)
-                    searchItemAdapter.notifyDataSetChanged()
-                    if (result.isEmpty()) {
-                        emptySearchPlaceholder.isVisible = true
-                    }
-                } else {
-                    tracks.clear()
-                    searchItemAdapter.notifyDataSetChanged()
-                    connectionErrorPlaceholder.isVisible = true
-                    showToast(getString(R.string.server_response_code, response.code().toString()))
-
+        searhTracksUseCase.execute(inputSearchText, object : Consumer {
+            override fun consume(data: ConsumerData) {
+                if (currentConsumerRunnable != null) {
+                    mainHandler.removeCallbacks(currentConsumerRunnable!!)
                 }
-            }
+                val consumerRunnable = Runnable {
+                    progressBar.isVisible = false
+                    when (data) {
+                        is ConsumerData.Data -> {
+                            tracks.clear()
+                            tracks.addAll(data.data)
+                            searchItemAdapter.notifyDataSetChanged()
+                            if (tracks.isEmpty()) {
+                                emptySearchPlaceholder.isVisible = true
+                            }
+                        }
 
-            override fun onFailure(call: Call<Response>, t: Throwable) {
-                showToast(t.message.toString())
-                tracks.clear()
-                searchItemAdapter.notifyDataSetChanged()
-                connectionErrorPlaceholder.isVisible = true
+                        is ConsumerData.Error -> {
+                            tracks.clear()
+                            searchItemAdapter.notifyDataSetChanged()
+                            connectionErrorPlaceholder.isVisible = true
+                            showToast(data.message)
+                        }
+
+                        is ConsumerData.NetworkError -> {
+                            showToast(data.message)
+                            tracks.clear()
+                            searchItemAdapter.notifyDataSetChanged()
+                            connectionErrorPlaceholder.isVisible = true
+                        }
+                    }
+                }
+
+                currentConsumerRunnable = consumerRunnable
+                mainHandler.post(currentConsumerRunnable!!)
             }
 
         })
+    }
+
+    override fun onDestroy() {
+        if (currentConsumerRunnable != null) {
+            mainHandler.removeCallbacks(currentConsumerRunnable!!)
+        }
+        super.onDestroy()
     }
 
     fun showToast(text: String) {

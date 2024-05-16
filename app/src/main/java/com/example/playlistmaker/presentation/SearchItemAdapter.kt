@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,17 +9,20 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.data.api.model.Track
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class HistoryItemAdapter(
+
+class SearchItemAdapter(
     private val dataSet: MutableList<Track>,
     private val onClick: (Int) -> Unit
 ) :
-    Adapter<HistoryItemAdapter.HistoryItemViewHolder>() {
+    Adapter<SearchItemAdapter.SearchItemViewHolder>() {
 
-    class HistoryItemViewHolder(rootView: View) : ViewHolder(rootView) {
+
+    class SearchItemViewHolder(rootView: View) : ViewHolder(rootView) {
         private val artistName: TextView
         private val trackName: TextView
         private val trackTime: TextView
@@ -28,8 +31,8 @@ class HistoryItemAdapter(
             rootView.context.resources.getDimension(R.dimen.corner_radius_search_item_img).toInt()
 
         init {
-            trackName = rootView.findViewById(R.id.track_name)
             artistName = rootView.findViewById(R.id.artist_name)
+            trackName = rootView.findViewById(R.id.track_name)
             trackTime = rootView.findViewById(R.id.track_time)
             artworkUrl100 = rootView.findViewById(R.id.artwork_url_100)
         }
@@ -44,17 +47,24 @@ class HistoryItemAdapter(
             )
                 .placeholder(R.drawable.placeholder_artwork).into(artworkUrl100)
         }
+
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryItemViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): SearchItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.search_item, parent, false)
-        return HistoryItemViewHolder(view)
+        return SearchItemViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: SearchItemViewHolder, position: Int) {
+        holder.bind(dataSet[position])
+        holder.itemView.setOnClickListener {
+            onClick(position)
+        }
+
     }
 
     override fun getItemCount() = dataSet.size
-
-    override fun onBindViewHolder(holder: HistoryItemViewHolder, position: Int) {
-        holder.bind(dataSet[position])
-        holder.itemView.setOnClickListener { onClick(position) }
-    }
 }
