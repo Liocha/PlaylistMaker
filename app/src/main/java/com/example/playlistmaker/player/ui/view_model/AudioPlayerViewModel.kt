@@ -2,7 +2,6 @@ package com.example.playlistmaker.player.ui.view_model
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +14,7 @@ import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class AudioPlayerViewModel(
@@ -35,46 +35,20 @@ class AudioPlayerViewModel(
     private val _playButtonState = MutableLiveData<Int>()
     val playButtonState: LiveData<Int> = _playButtonState
 
+    private val dataFormat by lazy {
+        SimpleDateFormat(
+            "mm:ss",
+            Locale.getDefault()
+        )
+    }
+
     init {
         setupMediaPlayback()
         loadingTrack()
     }
 
-    private fun loadingTrack() {
-        _screenState.value = AudioPlayerScreenState.Success(track)
-    }
-
-
-    private val currentPositionSetter = object : Runnable {
-        override fun run() {
-            handler.postDelayed(this, 200)
-            if (playerState == PlayerState.PLAYING) {
-                _currentTrackTime.postValue(
-                    SimpleDateFormat(
-                        "mm:ss",
-                        Locale.getDefault()
-                    ).format(playerInteractor.getCurrentPosition())
-                )
-            }
-        }
-    }
-
-    private fun setupMediaPlayback() {
-        playerInteractor.preparePlayer(track.previewUrl)
-        playerInteractor.setListener(object : PlayerListener {
-            override fun onStateChange(state: PlayerState) {
-                playerState = state
-                if (state == PlayerState.PLAYBACK_COMPLETED) {
-                    handler.removeCallbacks(currentPositionSetter)
-                    _currentTrackTime.postValue("00:00")
-                }
-                updatePlaybackUi()
-            }
-        })
-
-    }
-
     companion object {
+        const val TRACK_POSITION_UPDATE_INTERVAL_MS = 200L
         fun getViewModelFactory(
             track: Track,
             playerInteractor: MediaPlayerInteractor
@@ -87,6 +61,37 @@ class AudioPlayerViewModel(
             }
         }
     }
+
+    private fun loadingTrack() {
+        _screenState.value = AudioPlayerScreenState.Success(track)
+    }
+
+    private val currentPositionSetter = object : Runnable {
+        override fun run() {
+            handler.postDelayed(this, TRACK_POSITION_UPDATE_INTERVAL_MS)
+            if (playerState == PlayerState.PLAYING) {
+                _currentTrackTime.postValue(
+                    dataFormat.format(playerInteractor.getCurrentPosition())
+                )
+            }
+        }
+    }
+
+    private fun setupMediaPlayback() {
+        playerInteractor.preparePlayer(track.previewUrl)
+        playerInteractor.setListener(object : PlayerListener {
+            override fun onStateChange(state: PlayerState) {
+                playerState = state
+                if (state == PlayerState.PLAYBACK_COMPLETED) {
+                    handler.removeCallbacks(currentPositionSetter)
+                    _currentTrackTime.postValue(dataFormat.format(Date(0)))
+                }
+                updatePlaybackUi()
+            }
+        })
+
+    }
+
 
     fun playbackControl() {
         handlePlaybackState()
@@ -101,8 +106,9 @@ class AudioPlayerViewModel(
 
             PlayerState.PAUSED, PlayerState.PREPARED, PlayerState.PLAYBACK_COMPLETED -> {
                 playerInteractor.startPlayer()
-                handler.postDelayed(currentPositionSetter, 200)
+                handler.postDelayed(currentPositionSetter, TRACK_POSITION_UPDATE_INTERVAL_MS)
             }
+
             PlayerState.DEFAULT -> {}
         }
     }
@@ -121,6 +127,5 @@ class AudioPlayerViewModel(
         playerInteractor.release()
         handler.removeCallbacks(currentPositionSetter)
     }
-
 
 }

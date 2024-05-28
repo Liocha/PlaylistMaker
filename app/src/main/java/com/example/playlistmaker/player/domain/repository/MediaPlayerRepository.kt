@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player.data.repository
+package com.example.playlistmaker.player.domain.repository
 
 import com.example.playlistmaker.player.domain.api.PlayerListener
 

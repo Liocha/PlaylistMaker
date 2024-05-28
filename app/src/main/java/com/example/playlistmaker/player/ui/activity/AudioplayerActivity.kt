@@ -17,11 +17,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerScreenState
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.search.ui.SearchActivity.Companion.TRACK_KEY
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -51,7 +51,7 @@ class AudioplayerActivity : AppCompatActivity() {
             finish()
         }
 
-        val track = intent.getParcelableExtra("TRACK", Track::class.java)!!
+        val track = intent.getParcelableExtra(TRACK_KEY, Track::class.java)!!
         mediaPlayerInteractor = Creator.provideMediaPLayerInteractor()
         val viewModelFactory =
             AudioPlayerViewModel.getViewModelFactory(track, mediaPlayerInteractor)
@@ -81,7 +81,7 @@ class AudioplayerActivity : AppCompatActivity() {
             currentTrackTime.text = time
         }
 
-        viewModel.playButtonState.observe(this) {iconResource ->
+        viewModel.playButtonState.observe(this) { iconResource ->
             playButton.setImageResource(iconResource)
         }
 
@@ -129,7 +129,9 @@ class AudioplayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.playbackControl()
+        if (!isFinishing) {
+            viewModel.playbackControl()
+        }
     }
 
     override fun onDestroy() {

@@ -1,8 +1,8 @@
-package com.example.playlistmaker.sharing.data.impl
+package com.example.playlistmaker.sharing.data.repository
 
 import android.content.Context
 import com.example.playlistmaker.R
-import com.example.playlistmaker.sharing.data.ResourceShareProvider
+import com.example.playlistmaker.sharing.domain.repository.ResourceShareProvider
 import com.example.playlistmaker.sharing.domain.model.EmailData
 
 class ResourceShareProviderImpl(private val context: Context) : ResourceShareProvider {

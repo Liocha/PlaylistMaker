@@ -1,13 +1,13 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
-import com.example.playlistmaker.search.data.repository.impl.TracksRepositoryImpl
+import com.example.playlistmaker.search.data.repository.TracksRepositoryImpl
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
-import com.example.playlistmaker.player.data.repository.impl.MediaPlayerRepositoryImpl
-import com.example.playlistmaker.search.data.repository.impl.SearchHistoryRepositoryImpl
-import com.example.playlistmaker.player.data.repository.MediaPlayerRepository
-import com.example.playlistmaker.search.data.repository.SearchHistoryRepository
-import com.example.playlistmaker.search.data.repository.TracksRepository
+import com.example.playlistmaker.player.data.repository.MediaPlayerRepositoryImpl
+import com.example.playlistmaker.search.data.repository.SearchHistoryRepositoryImpl
+import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.search.domain.repository.SearchHistoryRepository
+import com.example.playlistmaker.search.domain.repository.TracksRepository
 import com.example.playlistmaker.search.domain.use_case.impl.ClearSearchHistoryUseCase
 import com.example.playlistmaker.search.domain.use_case.impl.GetSearchHistoryUseCase
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
@@ -18,14 +18,14 @@ import com.example.playlistmaker.search.domain.use_case.ClearSearchHistory
 import com.example.playlistmaker.search.domain.use_case.GetSearchHistory
 import com.example.playlistmaker.search.domain.use_case.SaveSearchHistory
 import com.example.playlistmaker.search.domain.use_case.SearchTracks
-import com.example.playlistmaker.settings.data.SettingsRepository
-import com.example.playlistmaker.settings.data.impl.SettingsRepositoryImpl
+import com.example.playlistmaker.settings.domain.repository.SettingsRepository
+import com.example.playlistmaker.settings.data.repository.SettingsRepositoryImpl
 import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.settings.domain.impl.SettingsInteractorImpl
-import com.example.playlistmaker.sharing.data.ExternalNavigator
-import com.example.playlistmaker.sharing.data.ResourceShareProvider
-import com.example.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
-import com.example.playlistmaker.sharing.data.impl.ResourceShareProviderImpl
+import com.example.playlistmaker.sharing.domain.repository.ExternalNavigator
+import com.example.playlistmaker.sharing.domain.repository.ResourceShareProvider
+import com.example.playlistmaker.sharing.data.repository.ExternalNavigatorImpl
+import com.example.playlistmaker.sharing.data.repository.ResourceShareProviderImpl
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 

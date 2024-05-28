@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.domain.use_case.impl
 
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.api.PlayerListener
-import com.example.playlistmaker.player.data.repository.MediaPlayerRepository
+import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
 
 class MediaPlayerInteractorImpi(private val repository: MediaPlayerRepository) :
     MediaPlayerInteractor

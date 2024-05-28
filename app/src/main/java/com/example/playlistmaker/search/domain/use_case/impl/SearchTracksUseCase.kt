@@ -3,7 +3,7 @@ package com.example.playlistmaker.search.domain.use_case.impl
 import com.example.playlistmaker.search.domain.consumer.Consumer
 import com.example.playlistmaker.search.domain.consumer.ConsumerData
 import com.example.playlistmaker.search.domain.model.Resource
-import com.example.playlistmaker.search.data.repository.TracksRepository
+import com.example.playlistmaker.search.domain.repository.TracksRepository
 import com.example.playlistmaker.search.domain.use_case.SearchTracks
 import java.util.concurrent.Executors
 

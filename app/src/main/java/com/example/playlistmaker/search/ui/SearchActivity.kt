@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -27,9 +26,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.ui.activity.AudioplayerActivity
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.domain.use_case.impl.ClearSearchHistoryUseCase
-import com.example.playlistmaker.search.domain.use_case.impl.GetSearchHistoryUseCase
-import com.example.playlistmaker.search.domain.use_case.impl.SaveSearchHistoryUseCase
 import com.example.playlistmaker.search.ui.view_model.SearchState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 
@@ -59,11 +55,11 @@ class SearchActivity : AppCompatActivity() {
 
         val searchTracksUseCase = Creator.provideSearchTracksUseCase()
         val getSearchHistoryUseCase =
-            Creator.provideGetSearchHistoryUseCase(applicationContext) as GetSearchHistoryUseCase
+            Creator.provideGetSearchHistoryUseCase(applicationContext)
         val saveSearchHistoryUseCase =
-            Creator.provideSaveSearchHistoryUseCase(applicationContext) as SaveSearchHistoryUseCase
+            Creator.provideSaveSearchHistoryUseCase(applicationContext)
         val clearSearchHistoryUseCase =
-            Creator.provideClearSearchHistoryUseCase(applicationContext) as ClearSearchHistoryUseCase
+            Creator.provideClearSearchHistoryUseCase(applicationContext)
 
         val viewModelFactory = SearchViewModel.getViewModelFactory(
             application,
@@ -103,8 +99,8 @@ class SearchActivity : AppCompatActivity() {
 
         viewModel.searchQuery.observe(this) { query ->
             if (searchInput.text.toString() != query) {
-                   searchInput.setText(query)
-                   searchInput.setSelection(query.length)
+                searchInput.setText(query)
+                searchInput.setSelection(query.length)
             }
         }
 
@@ -128,7 +124,7 @@ class SearchActivity : AppCompatActivity() {
         historyItemAdapter = HistoryItemAdapter {
             if (clickDebounce()) {
                 val displayIntent = Intent(this, AudioplayerActivity::class.java).apply {
-                    putExtra("TRACK", it)
+                    putExtra(TRACK_KEY, it)
                 }
                 startActivity(displayIntent)
             }
@@ -138,7 +134,7 @@ class SearchActivity : AppCompatActivity() {
             if (clickDebounce()) {
                 viewModel.addTrackToSearchHistory(it)
                 val displayIntent = Intent(this, AudioplayerActivity::class.java).apply {
-                    putExtra("TRACK", it)
+                    putExtra(TRACK_KEY, it)
                 }
                 startActivity(displayIntent)
             }
@@ -251,6 +247,8 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val TRACK_KEY = "TRACK"
+
     }
 
     override fun onDestroy() {

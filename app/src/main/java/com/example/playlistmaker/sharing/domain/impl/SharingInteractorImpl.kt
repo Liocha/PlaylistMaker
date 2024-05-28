@@ -1,7 +1,7 @@
 package com.example.playlistmaker.sharing.domain.impl
 
-import com.example.playlistmaker.sharing.data.ExternalNavigator
-import com.example.playlistmaker.sharing.data.ResourceShareProvider
+import com.example.playlistmaker.sharing.domain.repository.ExternalNavigator
+import com.example.playlistmaker.sharing.domain.repository.ResourceShareProvider
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 import com.example.playlistmaker.sharing.domain.model.EmailData
 
