@@ -14,22 +14,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PlaylistMaker"
+        android:launchMode="standard"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.AudioplayerActivity"
+            android:name=".player.ui.activity.AudioplayerActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.SearchActivity"
+            android:name=".search.ui.SearchActivity"
             android:exported="false"
             android:theme="@style/Activity.Search.Theme.PlaylistMaker" />
         <activity
-            android:name=".presentation.MediaActivity"
+            android:name=".media.MediaActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.SettingsActivity"
+            android:name=".settings.ui.activity.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true"
             android:theme="@style/Activity.Main.Theme.PlaylistMaker">
             <intent-filter>
