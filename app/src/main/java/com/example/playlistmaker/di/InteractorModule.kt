@@ -1,0 +1,47 @@
+package com.example.playlistmaker.di
+
+import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
+import com.example.playlistmaker.player.domain.use_case.impl.MediaPlayerInteractorImpi
+import com.example.playlistmaker.search.domain.use_case.ClearSearchHistory
+import com.example.playlistmaker.search.domain.use_case.GetSearchHistory
+import com.example.playlistmaker.search.domain.use_case.SaveSearchHistory
+import com.example.playlistmaker.search.domain.use_case.SearchTracks
+import com.example.playlistmaker.search.domain.use_case.impl.ClearSearchHistoryUseCase
+import com.example.playlistmaker.search.domain.use_case.impl.GetSearchHistoryUseCase
+import com.example.playlistmaker.search.domain.use_case.impl.SaveSearchHistoryUseCase
+import com.example.playlistmaker.search.domain.use_case.impl.SearchTracksUseCase
+import com.example.playlistmaker.settings.domain.SettingsInteractor
+import com.example.playlistmaker.settings.domain.impl.SettingsInteractorImpl
+import com.example.playlistmaker.sharing.domain.SharingInteractor
+import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
+import org.koin.dsl.module
+
+val interactorModule = module {
+    single<SearchTracks> {
+        SearchTracksUseCase(get())
+    }
+
+    single<SettingsInteractor> {
+        SettingsInteractorImpl(get())
+    }
+
+    single<SharingInteractor> {
+        SharingInteractorImpl(get(), get())
+    }
+
+    factory<MediaPlayerInteractor> {
+        MediaPlayerInteractorImpi(get())
+    }
+
+    single<ClearSearchHistory> {
+        ClearSearchHistoryUseCase(get())
+    }
+
+    single<SaveSearchHistory> {
+        SaveSearchHistoryUseCase(get())
+    }
+
+    single<GetSearchHistory> {
+        GetSearchHistoryUseCase(get())
+    }
+}

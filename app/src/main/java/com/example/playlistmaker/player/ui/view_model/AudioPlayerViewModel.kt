@@ -5,9 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.domain.api.PlayerListener
 import com.example.playlistmaker.player.domain.model.PlayerState
@@ -49,17 +46,6 @@ class AudioPlayerViewModel(
 
     companion object {
         const val TRACK_POSITION_UPDATE_INTERVAL_MS = 200L
-        fun getViewModelFactory(
-            track: Track,
-            playerInteractor: MediaPlayerInteractor
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                AudioPlayerViewModel(
-                    track,
-                    playerInteractor,
-                )
-            }
-        }
     }
 
     private fun loadingTrack() {
@@ -110,6 +96,7 @@ class AudioPlayerViewModel(
             }
 
             PlayerState.DEFAULT -> {}
+
         }
     }
 
@@ -126,6 +113,11 @@ class AudioPlayerViewModel(
         super.onCleared()
         playerInteractor.release()
         handler.removeCallbacks(currentPositionSetter)
+    }
+
+    fun handleActivityPause() {
+        playerInteractor.pausePlayer()
+        updatePlaybackUi()
     }
 
 }

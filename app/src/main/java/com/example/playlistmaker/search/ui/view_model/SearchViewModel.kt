@@ -1,15 +1,13 @@
 package com.example.playlistmaker.search.ui.view_model
 
 import android.app.Application
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.search.domain.consumer.Consumer
 import com.example.playlistmaker.search.domain.consumer.ConsumerData
 import com.example.playlistmaker.search.domain.model.Track
@@ -19,32 +17,15 @@ import com.example.playlistmaker.search.domain.use_case.SaveSearchHistory
 import com.example.playlistmaker.search.domain.use_case.SearchTracks
 
 class SearchViewModel(
-    application: Application,
+    application: Context,
     private val searchTracksUseCase: SearchTracks,
     private val getSearchHistoryUseCase: GetSearchHistory,
     private val saveSearchHistoryUseCase: SaveSearchHistory,
     private val clearSearchHistoryUseCase: ClearSearchHistory
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application as Application) {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getViewModelFactory(
-            application: Application,
-            searchTracksUseCase: SearchTracks,
-            getSearchHistoryUseCase: GetSearchHistory,
-            saveSearchHistoryUseCase: SaveSearchHistory,
-            clearSearchHistoryUseCase: ClearSearchHistory
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    application,
-                    searchTracksUseCase,
-                    getSearchHistoryUseCase,
-                    saveSearchHistoryUseCase,
-                    clearSearchHistoryUseCase
-                )
-            }
-        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
