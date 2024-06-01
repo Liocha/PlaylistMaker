@@ -1,16 +1,13 @@
 package com.example.playlistmaker.player.data.repository
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
 import com.example.playlistmaker.player.domain.api.PlayerListener
 import com.example.playlistmaker.player.domain.model.PlayerState
+import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
 
-class MediaPlayerRepositoryImpl : MediaPlayerRepository {
-
+class MediaPlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : MediaPlayerRepository {
 
     private lateinit var listener: PlayerListener
-
-    private var mediaPlayer = MediaPlayer()
 
     override fun setListener(listener: PlayerListener) {
         this.listener = listener

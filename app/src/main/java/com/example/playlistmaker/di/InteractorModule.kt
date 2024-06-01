@@ -17,15 +17,15 @@ import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 import org.koin.dsl.module
 
 val interactorModule = module {
-    single<SearchTracks> {
+    factory<SearchTracks> {
         SearchTracksUseCase(get())
     }
 
-    single<SettingsInteractor> {
+    factory<SettingsInteractor> {
         SettingsInteractorImpl(get())
     }
 
-    single<SharingInteractor> {
+    factory<SharingInteractor> {
         SharingInteractorImpl(get(), get())
     }
 
@@ -33,15 +33,15 @@ val interactorModule = module {
         MediaPlayerInteractorImpi(get())
     }
 
-    single<ClearSearchHistory> {
+    factory<ClearSearchHistory> {
         ClearSearchHistoryUseCase(get())
     }
 
-    single<SaveSearchHistory> {
+    factory<SaveSearchHistory> {
         SaveSearchHistoryUseCase(get())
     }
 
-    single<GetSearchHistory> {
+    factory<GetSearchHistory> {
         GetSearchHistoryUseCase(get())
     }
 }

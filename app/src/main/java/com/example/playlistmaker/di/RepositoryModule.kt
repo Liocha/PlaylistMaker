@@ -21,11 +21,11 @@ val repositoryModule = module {
     }
 
     single<SearchHistoryRepository> {
-        SearchHistoryRepositoryImpl(get())
+        SearchHistoryRepositoryImpl(get(), get())
     }
 
     factory<MediaPlayerRepository> {
-        MediaPlayerRepositoryImpl()
+        MediaPlayerRepositoryImpl(get())
     }
 
     single<ResourceShareProvider> {

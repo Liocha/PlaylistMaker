@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.ui.view_model
 
 import android.app.Application
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -17,12 +16,12 @@ import com.example.playlistmaker.search.domain.use_case.SaveSearchHistory
 import com.example.playlistmaker.search.domain.use_case.SearchTracks
 
 class SearchViewModel(
-    application: Context,
+    application: Application,
     private val searchTracksUseCase: SearchTracks,
     private val getSearchHistoryUseCase: GetSearchHistory,
     private val saveSearchHistoryUseCase: SaveSearchHistory,
     private val clearSearchHistoryUseCase: ClearSearchHistory
-) : AndroidViewModel(application as Application) {
+) : AndroidViewModel(application) {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
@@ -71,7 +70,6 @@ class SearchViewModel(
             override fun consume(data: ConsumerData) {
                 val tracks = mutableListOf<Track>()
                 when (data) {
-
                     is ConsumerData.Data -> {
                         if (data.data.isEmpty()) {
                             renderState(SearchState.Empty)
@@ -90,8 +88,6 @@ class SearchViewModel(
                         renderState(SearchState.Error(data.message))
                         _showToast.postValue(data.message)
                     }
-
-                    else -> {}
                 }
             }
         })
@@ -104,7 +100,7 @@ class SearchViewModel(
     fun onSearchFocusGained() {
         if (_searchQuery.value == "") {
             loadSearchHistory()
-            if (_searchHistory.value?.size ?: 0 > 0) {
+            if ((_searchHistory.value?.size ?: 0) > 0) {
                 _isSearchHistoryVisible.value = true
             }
         }
@@ -148,7 +144,7 @@ class SearchViewModel(
     fun setSearchHistoryVisible(visible: Boolean) {
         if (visible) {
             loadSearchHistory()
-            if (_searchHistory.value?.size ?: 0 > 0) {
+            if ((_searchHistory.value?.size ?: 0) > 0) {
                 _isSearchHistoryVisible.value = true
             }
         } else {

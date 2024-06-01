@@ -1,7 +1,6 @@
 package com.example.playlistmaker.settings.ui.view_model
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,11 +10,11 @@ import com.example.playlistmaker.settings.domain.model.ThemeSettings
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 
 class SettingsViewModel(
-    application: Context,
+    application: Application,
     private val sharingInteractor: SharingInteractor,
     private val settingsInteractor: SettingsInteractor
 
-) : AndroidViewModel(application as Application) {
+) : AndroidViewModel(application) {
 
     private val _themeSettings = MutableLiveData<ThemeSettings>()
     val themeSettings: LiveData<ThemeSettings> get() = _themeSettings
