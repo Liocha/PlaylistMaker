@@ -19,15 +19,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.ui.activity.AudioplayerActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.view_model.SearchState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchItemsView: RecyclerView
@@ -47,32 +46,10 @@ class SearchActivity : AppCompatActivity() {
     private var currentConsumerRunnable: Runnable? = null
     private var isClickAllowed = true
 
-    private lateinit var viewModel: SearchViewModel
-
+    private val viewModel by viewModel<SearchViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        val searchTracksUseCase = Creator.provideSearchTracksUseCase()
-        val getSearchHistoryUseCase =
-            Creator.provideGetSearchHistoryUseCase(applicationContext)
-        val saveSearchHistoryUseCase =
-            Creator.provideSaveSearchHistoryUseCase(applicationContext)
-        val clearSearchHistoryUseCase =
-            Creator.provideClearSearchHistoryUseCase(applicationContext)
-
-        val viewModelFactory = SearchViewModel.getViewModelFactory(
-            application,
-            searchTracksUseCase,
-            getSearchHistoryUseCase,
-            saveSearchHistoryUseCase,
-            clearSearchHistoryUseCase
-        )
-
-        viewModel = ViewModelProvider(
-            this, viewModelFactory
-        )[SearchViewModel::class.java]
-
 
         val searchInput = findViewById<EditText>(R.id.search_input)
         val searchClearButton = findViewById<ImageView>(R.id.search_clear_btn)

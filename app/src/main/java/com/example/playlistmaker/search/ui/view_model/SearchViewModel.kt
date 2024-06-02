@@ -7,9 +7,6 @@ import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.search.domain.consumer.Consumer
 import com.example.playlistmaker.search.domain.consumer.ConsumerData
 import com.example.playlistmaker.search.domain.model.Track
@@ -28,23 +25,6 @@ class SearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getViewModelFactory(
-            application: Application,
-            searchTracksUseCase: SearchTracks,
-            getSearchHistoryUseCase: GetSearchHistory,
-            saveSearchHistoryUseCase: SaveSearchHistory,
-            clearSearchHistoryUseCase: ClearSearchHistory
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    application,
-                    searchTracksUseCase,
-                    getSearchHistoryUseCase,
-                    saveSearchHistoryUseCase,
-                    clearSearchHistoryUseCase
-                )
-            }
-        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -90,7 +70,6 @@ class SearchViewModel(
             override fun consume(data: ConsumerData) {
                 val tracks = mutableListOf<Track>()
                 when (data) {
-
                     is ConsumerData.Data -> {
                         if (data.data.isEmpty()) {
                             renderState(SearchState.Empty)
@@ -109,8 +88,6 @@ class SearchViewModel(
                         renderState(SearchState.Error(data.message))
                         _showToast.postValue(data.message)
                     }
-
-                    else -> {}
                 }
             }
         })
@@ -123,7 +100,7 @@ class SearchViewModel(
     fun onSearchFocusGained() {
         if (_searchQuery.value == "") {
             loadSearchHistory()
-            if (_searchHistory.value?.size ?: 0 > 0) {
+            if ((_searchHistory.value?.size ?: 0) > 0) {
                 _isSearchHistoryVisible.value = true
             }
         }
@@ -167,7 +144,7 @@ class SearchViewModel(
     fun setSearchHistoryVisible(visible: Boolean) {
         if (visible) {
             loadSearchHistory()
-            if (_searchHistory.value?.size ?: 0 > 0) {
+            if ((_searchHistory.value?.size ?: 0) > 0) {
                 _isSearchHistoryVisible.value = true
             }
         } else {

@@ -12,16 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerScreenState
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.SearchActivity.Companion.TRACK_KEY
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -30,10 +29,13 @@ import java.util.Locale
 class AudioplayerActivity : AppCompatActivity() {
 
     private lateinit var playButton: ImageButton
-    private lateinit var mediaPlayerInteractor: MediaPlayerInteractor
     private lateinit var currentTrackTime: TextView
-    lateinit var viewModel: AudioPlayerViewModel
 
+    private val track: Track by lazy {
+        intent.getParcelableExtra(TRACK_KEY)!!
+    }
+
+    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(track) }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,12 +52,6 @@ class AudioplayerActivity : AppCompatActivity() {
         btnBack.setOnClickListener {
             finish()
         }
-
-        val track = intent.getParcelableExtra(TRACK_KEY, Track::class.java)!!
-        mediaPlayerInteractor = Creator.provideMediaPLayerInteractor()
-        val viewModelFactory =
-            AudioPlayerViewModel.getViewModelFactory(track, mediaPlayerInteractor)
-        viewModel = ViewModelProvider(this, viewModelFactory!!)[AudioPlayerViewModel::class.java]
 
         playButton = findViewById(R.id.btnPlay)
 
@@ -86,7 +82,6 @@ class AudioplayerActivity : AppCompatActivity() {
         }
 
         playButton.setOnClickListener { viewModel.playbackControl() }
-
 
     }
 
@@ -130,7 +125,7 @@ class AudioplayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (!isFinishing) {
-            viewModel.playbackControl()
+            viewModel.handleActivityPause()
         }
     }
 
