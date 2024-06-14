@@ -79,5 +79,13 @@
         <item name="layout_constraintWidth_max">200dp</item>
         <item name="android:ellipsize">end</item>
     </style>
+    
+    <style name="TabLayoutStyle">
+        <item name="tabTextColor">@color/yp_black</item>
+        <item name="tabIndicatorColor">@color/yp_black</item>
+    </style>
 
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
 </resources>
