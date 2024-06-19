@@ -1,34 +1,34 @@
 package com.example.playlistmaker.search.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
-import com.example.playlistmaker.player.ui.activity.AudioplayerActivity
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.view_model.SearchState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
+
+    lateinit var binding: FragmentSearchBinding
     private lateinit var searchItemsView: RecyclerView
     private lateinit var emptySearchPlaceholder: TextView
     private lateinit var connectionErrorPlaceholder: ViewGroup
@@ -47,34 +47,44 @@ class SearchActivity : AppCompatActivity() {
     private var isClickAllowed = true
 
     private val viewModel by viewModel<SearchViewModel>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
 
-        val searchInput = findViewById<EditText>(R.id.search_input)
-        val searchClearButton = findViewById<ImageView>(R.id.search_clear_btn)
-        val btnBack = findViewById<ImageView>(R.id.btn_back)
-        emptySearchPlaceholder = findViewById(R.id.empty_search_placeholder)
-        connectionErrorPlaceholder = findViewById(R.id.connection_error_placeholder)
-        btnRefreshSearch = findViewById(R.id.btn_refresh_search)
-        progressBar = findViewById(R.id.progress_bar)
-        searchHistoryWidget = findViewById(R.id.search_history_widget)
-        listHistoryItems = findViewById(R.id.list_of_history_items)
-        historyClearBtn = findViewById(R.id.history_clear_btn)
-        searchItemsView = findViewById(R.id.list_of_search_items)
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        fun newInstance() = SearchFragment()
+    }
 
-        btnBack.setOnClickListener {
-            finish()
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val searchInput = binding.searchInput
+        val searchClearButton = binding.searchClearBtn
+
+        emptySearchPlaceholder = binding.emptySearchPlaceholder
+        connectionErrorPlaceholder = binding.connectionErrorPlaceholder
+        btnRefreshSearch = binding.btnRefreshSearch
+        progressBar = binding.progressBar
+        searchHistoryWidget = binding.searchHistoryWidget
+        listHistoryItems = binding.listOfHistoryItems
+        historyClearBtn = binding.historyClearBtn
+        searchItemsView = binding.listOfSearchItems
+
 
         searchClearButton.setOnClickListener {
             viewModel.clearSearchInput()
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
         }
 
-        viewModel.searchQuery.observe(this) { query ->
+        viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
             if (searchInput.text.toString() != query) {
                 searchInput.setText(query)
                 searchInput.setSelection(query.length)
@@ -100,32 +110,28 @@ class SearchActivity : AppCompatActivity() {
 
         historyItemAdapter = HistoryItemAdapter {
             if (clickDebounce()) {
-                val displayIntent = Intent(this, AudioplayerActivity::class.java).apply {
-                    putExtra(TRACK_KEY, it)
-                }
-                startActivity(displayIntent)
+                val action = SearchFragmentDirections.actionSearchFragmentToAudioplayerActivity(it)
+                findNavController().navigate(action)
             }
         }
 
         searchItemAdapter = SearchItemAdapter {
             if (clickDebounce()) {
                 viewModel.addTrackToSearchHistory(it)
-                val displayIntent = Intent(this, AudioplayerActivity::class.java).apply {
-                    putExtra(TRACK_KEY, it)
-                }
-                startActivity(displayIntent)
+                val action = SearchFragmentDirections.actionSearchFragmentToAudioplayerActivity(it)
+                findNavController().navigate(action)
             }
         }
 
         searchItemsView.apply {
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = searchItemAdapter
         }
 
         searchInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val inputMethodManager =
-                    getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
             }
             false
@@ -136,7 +142,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         listHistoryItems.apply {
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = historyItemAdapter
         }
 
@@ -150,16 +156,16 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.state.observe(this) {
+        viewModel.state.observe(viewLifecycleOwner) {
             render(it)
         }
 
-        viewModel.searchHistory.observe(this) { history ->
+        viewModel.searchHistory.observe(viewLifecycleOwner) { history ->
             historyItemAdapter.updateData(history)
         }
 
         viewModel.isSearchHistoryVisible.observe(
-            this
+            viewLifecycleOwner
         ) { showHistory ->
             if (showHistory) {
                 searchHistoryWidget.visibility = View.VISIBLE
@@ -170,7 +176,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.showToast.observe(this) {
+        viewModel.showToast.observe(viewLifecycleOwner) {
             showToast(it)
         }
     }
@@ -222,12 +228,6 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val TRACK_KEY = "TRACK"
-
-    }
-
     override fun onDestroy() {
         if (currentConsumerRunnable != null) {
             mainHandler.removeCallbacks(currentConsumerRunnable!!)
@@ -237,8 +237,9 @@ class SearchActivity : AppCompatActivity() {
 
     fun showToast(text: String) {
         if (text.isNotEmpty()) {
-            Toast.makeText(applicationContext, text, Toast.LENGTH_LONG).show()
+            Toast.makeText(requireActivity().applicationContext, text, Toast.LENGTH_LONG).show()
         }
     }
+
 
 }
