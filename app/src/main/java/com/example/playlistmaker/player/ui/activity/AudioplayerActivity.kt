@@ -18,7 +18,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerScreenState
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.ui.SearchActivity.Companion.TRACK_KEY
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -32,7 +31,7 @@ class AudioplayerActivity : AppCompatActivity() {
     private lateinit var currentTrackTime: TextView
 
     private val track: Track by lazy {
-        intent.getParcelableExtra(TRACK_KEY)!!
+        intent?.getParcelableExtra("track")!!
     }
 
     private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(track) }

@@ -20,22 +20,13 @@
             android:name=".player.ui.activity.AudioplayerActivity"
             android:exported="false" />
         <activity
-            android:name=".search.ui.SearchActivity"
-            android:exported="false"
-            android:theme="@style/Activity.Search.Theme.PlaylistMaker" />
-        <activity
-            android:name=".media.ui.activity.MediaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".settings.ui.activity.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".main.MainActivity"
+            android:name=".root.ui.RootActivity"
             android:exported="true"
-            android:theme="@style/Activity.Main.Theme.PlaylistMaker">
+            android:theme="@style/Activity.Main.Theme.PlaylistMaker"
+            android:windowSoftInputMode="adjustNothing"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

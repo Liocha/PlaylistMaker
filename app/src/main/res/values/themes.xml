@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/yp_blue</item>
@@ -6,14 +6,12 @@
         <item name="colorSecondary">@color/yp_blue</item>
         <item name="iconTint">@color/yp_text_gray</item>
     </style>
+
     <style name="Activity.Main.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
-        <item name="android:background">@color/yp_blue</item>
-        <item name="colorPrimary">@color/yp_white</item>
-        <item name="colorOnPrimary">@color/yp_black</item>
-        <item name="android:navigationBarColor">@color/yp_blue</item>
-        <item name="android:textColor">@color/yp_white</item>
+        <item name="bottomNavigationStyle">@style/CustomBottomNavigationStyle</item>
     </style>
-    <style name="Activity.Search.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
-    </style>
+
+    <style name="Activity.Search.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker"></style>
+
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 </resources>
