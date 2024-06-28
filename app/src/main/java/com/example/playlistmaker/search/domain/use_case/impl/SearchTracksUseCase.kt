@@ -1,32 +1,29 @@
 package com.example.playlistmaker.search.domain.use_case.impl
 
-import com.example.playlistmaker.search.domain.consumer.Consumer
-import com.example.playlistmaker.search.domain.consumer.ConsumerData
+import androidx.core.util.Pair
 import com.example.playlistmaker.search.domain.model.Resource
+import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.repository.TracksRepository
 import com.example.playlistmaker.search.domain.use_case.SearchTracks
-import java.util.concurrent.Executors
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SearchTracksUseCase(private val tracksRepository: TracksRepository) : SearchTracks {
-    private val executor = Executors.newCachedThreadPool()
-    override fun execute(query: String, consumer: Consumer) {
-        executor.execute {
-            when (val currencyResource = tracksRepository.searchTracks(query)) {
+
+    override fun execute(query: String): Flow<Pair<List<Track>?, String?>> {
+
+        return tracksRepository.searchTracks(query).map { result ->
+            when (result) {
                 is Resource.Success -> {
-                    val tracks = currencyResource.data
-                    consumer.consume(ConsumerData.Data(tracks))
+                    Pair(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    val msg = currencyResource.message
-                    consumer.consume(ConsumerData.Error(msg))
+                    Pair(null, result.message)
                 }
 
-                is Resource.NetworkError -> {
-                    val msg = currencyResource.message
-                    consumer.consume(ConsumerData.NetworkError(msg))
-                }
             }
         }
     }
+
 }

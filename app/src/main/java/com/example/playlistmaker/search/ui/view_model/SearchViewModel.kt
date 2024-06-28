@@ -1,19 +1,18 @@
 package com.example.playlistmaker.search.ui.view_model
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.playlistmaker.search.domain.consumer.Consumer
-import com.example.playlistmaker.search.domain.consumer.ConsumerData
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.use_case.ClearSearchHistory
 import com.example.playlistmaker.search.domain.use_case.GetSearchHistory
 import com.example.playlistmaker.search.domain.use_case.SaveSearchHistory
 import com.example.playlistmaker.search.domain.use_case.SearchTracks
+import com.example.playlistmaker.utils.Debounce
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     application: Application,
@@ -24,10 +23,8 @@ class SearchViewModel(
 ) : AndroidViewModel(application) {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
 
-    private val handler = Handler(Looper.getMainLooper())
     private val _state = MutableLiveData<SearchState>()
     val state: LiveData<SearchState> get() = _state
 
@@ -45,20 +42,22 @@ class SearchViewModel(
 
     private var latestSearchText: String? = null
 
+    private var serchJob: Job? = null
+
+    private val searchDebounceDelay =
+        Debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+            searchRequest(changedText)
+        }
+
     fun searchDebounce(changedText: String) {
+
         if (latestSearchText == changedText) {
             return
         }
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { searchRequest(changedText) }
 
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        this.latestSearchText = changedText
+
+        searchDebounceDelay.debounce(changedText)
     }
 
     private fun searchRequest(newSearchText: String) {
@@ -66,31 +65,34 @@ class SearchViewModel(
             return
         }
         renderState(SearchState.Loadind)
-        searchTracksUseCase.execute(newSearchText, object : Consumer {
-            override fun consume(data: ConsumerData) {
-                val tracks = mutableListOf<Track>()
-                when (data) {
-                    is ConsumerData.Data -> {
-                        if (data.data.isEmpty()) {
-                            renderState(SearchState.Empty)
-                        } else {
-                            tracks.addAll(data.data)
-                            renderState(SearchState.Content(tracks))
-                        }
-                    }
 
-                    is ConsumerData.Error -> {
-                        renderState(SearchState.Error(data.message))
-                        _showToast.postValue(data.message)
-                    }
-
-                    is ConsumerData.NetworkError -> {
-                        renderState(SearchState.Error(data.message))
-                        _showToast.postValue(data.message)
-                    }
-                }
+        serchJob = viewModelScope.launch {
+            searchTracksUseCase.execute(newSearchText).collect { pair ->
+                processResult(pair.first, pair.second)
             }
-        })
+        }
+    }
+
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+        val tracks = mutableListOf<Track>()
+        if (foundTracks != null) {
+            tracks.addAll(foundTracks)
+        }
+        when {
+            errorMessage != null -> {
+                renderState(SearchState.Error(errorMessage))
+                _showToast.postValue(errorMessage!!)
+            }
+
+            tracks.isEmpty() -> {
+                renderState(SearchState.Empty)
+            }
+
+            else -> {
+                renderState(SearchState.Content(tracks))
+            }
+
+        }
     }
 
     private fun renderState(state: SearchState) {
@@ -122,6 +124,8 @@ class SearchViewModel(
 
     fun clearSearchInput() {
         _searchQuery.value = ""
+        searchDebounceDelay.cancel()
+        serchJob?.cancel()
         renderState(SearchState.Content(listOf()))
         setSearchHistoryVisible(true)
     }
@@ -132,11 +136,9 @@ class SearchViewModel(
         }
         if (query == "") {
             this.latestSearchText = ""
-            handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
             clearSearchInput()
             return
         }
-
         _searchQuery.value = query
         searchDebounce(query)
     }

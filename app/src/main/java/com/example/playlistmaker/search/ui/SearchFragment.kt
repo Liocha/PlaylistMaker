@@ -2,8 +2,6 @@ package com.example.playlistmaker.search.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -17,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +23,7 @@ import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.view_model.SearchState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import com.example.playlistmaker.utils.Debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -42,11 +42,11 @@ class SearchFragment : Fragment() {
 
     private lateinit var historyItemAdapter: HistoryItemAdapter
 
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private var currentConsumerRunnable: Runnable? = null
     private var isClickAllowed = true
 
     private val viewModel by viewModel<SearchViewModel>()
+
+    private lateinit var clickDebounceDelay: Debounce<Unit>
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
@@ -63,6 +63,11 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        clickDebounceDelay =  Debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
+            this.isClickAllowed = true
+        }
 
         val searchInput = binding.searchInput
         val searchClearButton = binding.searchClearBtn
@@ -223,16 +228,9 @@ class SearchFragment : Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            mainHandler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            clickDebounceDelay.debounce(Unit)
         }
         return current
-    }
-
-    override fun onDestroy() {
-        if (currentConsumerRunnable != null) {
-            mainHandler.removeCallbacks(currentConsumerRunnable!!)
-        }
-        super.onDestroy()
     }
 
     fun showToast(text: String) {

@@ -6,31 +6,44 @@ import com.example.playlistmaker.search.data.dto.TracksSearchResponse
 import com.example.playlistmaker.search.domain.model.Resource
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.repository.TracksRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
-    override fun searchTracks(query: String): Resource<List<Track>> {
+    override fun searchTracks(query: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TracksSearchRequest(query))
-        if (response.resultCode == 200) {
-            val tracks = (response as TracksSearchResponse).results.map {
-                Track(
-                    it.artistName,
-                    it.artworkUrl100,
-                    it.trackName,
-                    it.trackTimeMillis,
-                    it.trackId,
-                    it.collectionName,
-                    it.releaseDate,
-                    it.primaryGenreName,
-                    it.country,
-                    it.previewUrl
-                )
-            }
-            return Resource.Success(tracks)
-        } else if (response.resultCode == -1) {
-            return Resource.NetworkError(response.message)
-        } else {
-            return Resource.Error(response.message)
-        }
-    }
+        when (response.resultCode) {
+            200 -> {
+                with(response as TracksSearchResponse) {
+                    val tracks = results.map {
+                        Track(
+                            it.artistName,
+                            it.artworkUrl100,
+                            it.trackName,
+                            it.trackTimeMillis,
+                            it.trackId,
+                            it.collectionName,
+                            it.releaseDate,
+                            it.primaryGenreName,
+                            it.country,
+                            it.previewUrl
+                        )
+                    }
 
+                    emit(Resource.Success(tracks))
+                }
+            }
+
+            -1 -> {
+                emit(Resource.Error(response.message))
+            }
+
+            else -> {
+                emit(Resource.Error(response.message))
+            }
+
+        }
+
+    }
 }
