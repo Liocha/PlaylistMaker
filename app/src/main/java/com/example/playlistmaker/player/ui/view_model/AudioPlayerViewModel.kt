@@ -1,18 +1,16 @@
 package com.example.playlistmaker.player.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.player.domain.api.PlayerListener
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -27,7 +25,7 @@ class AudioPlayerViewModel(
         MutableLiveData<AudioPlayerScreenState>(AudioPlayerScreenState.Loading)
     val screenState: LiveData<AudioPlayerScreenState> = _screenState
 
-    private var playerState: PlayerState = PlayerState.DEFAULT
+    private lateinit var playerState: PlayerState
 
     private val _currentTrackTime = MutableLiveData<String>()
     val currentTrackTime: LiveData<String> = _currentTrackTime
@@ -47,6 +45,16 @@ class AudioPlayerViewModel(
     init {
         setupMediaPlayback()
         loadingTrack()
+        viewModelScope.launch {
+            playerInteractor.playerStateFlow().collectLatest { latestPlayerState ->
+                playerState = latestPlayerState
+                updatePlaybackUi()
+                if (playerState == PlayerState.PLAYBACK_COMPLETED) {
+                    timerJob?.cancel()
+                    _currentTrackTime.postValue(dataFormat.format(Date(0)))
+                }
+            }
+        }
     }
 
     companion object {
@@ -56,6 +64,7 @@ class AudioPlayerViewModel(
     private fun loadingTrack() {
         _screenState.value = AudioPlayerScreenState.Success(track)
     }
+
 
     private fun currentPositionSetter() {
         timerJob = viewModelScope.launch {
@@ -70,17 +79,6 @@ class AudioPlayerViewModel(
 
     private fun setupMediaPlayback() {
         track.previewUrl?.let { playerInteractor.preparePlayer(it) }
-        playerInteractor.setListener(object : PlayerListener {
-            override fun onStateChange(state: PlayerState) {
-                playerState = state
-                if (state == PlayerState.PLAYBACK_COMPLETED) {
-                    timerJob?.cancel()
-                    _currentTrackTime.postValue(dataFormat.format(Date(0)))
-                }
-                updatePlaybackUi()
-            }
-        })
-
     }
 
 
