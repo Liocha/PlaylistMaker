@@ -1,15 +1,14 @@
 package com.example.playlistmaker.player.domain.use_case.impl
 
-import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
-import com.example.playlistmaker.player.domain.api.PlayerListener
+import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
+import kotlinx.coroutines.flow.StateFlow
 
 class MediaPlayerInteractorImpi(private val repository: MediaPlayerRepository) :
-    MediaPlayerInteractor
-{
-    override fun setListener(listener: PlayerListener) {
-        repository.setListener(listener)
-    }
+    MediaPlayerInteractor {
+
+
     override fun preparePlayer(url: String) {
         repository.preparePlayer(url)
     }
@@ -26,7 +25,12 @@ class MediaPlayerInteractorImpi(private val repository: MediaPlayerRepository) :
         repository.release()
     }
 
-    override fun getCurrentPosition() : Int {
+    override fun getCurrentPosition(): Int {
         return repository.getCurrentPosition()
     }
+
+    override fun playerStateFlow(): StateFlow<PlayerState> {
+        return repository.stateFlow
+    }
+
 }

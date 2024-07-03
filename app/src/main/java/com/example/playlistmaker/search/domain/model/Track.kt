@@ -10,8 +10,8 @@ data class Track (
     val trackTimeMillis: Int,
     val trackId: String,
     val collectionName: String,
-    val releaseDate: String,
+    val releaseDate: String?,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String
+    val previewUrl: String?
 ) : Parcelable

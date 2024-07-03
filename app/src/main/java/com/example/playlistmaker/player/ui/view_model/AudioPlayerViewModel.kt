@@ -1,15 +1,17 @@
 package com.example.playlistmaker.player.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.player.domain.api.PlayerListener
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -23,14 +25,15 @@ class AudioPlayerViewModel(
         MutableLiveData<AudioPlayerScreenState>(AudioPlayerScreenState.Loading)
     val screenState: LiveData<AudioPlayerScreenState> = _screenState
 
-    private var playerState: PlayerState = PlayerState.DEFAULT
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var playerState: PlayerState
 
     private val _currentTrackTime = MutableLiveData<String>()
     val currentTrackTime: LiveData<String> = _currentTrackTime
 
     private val _playButtonState = MutableLiveData<Int>()
     val playButtonState: LiveData<Int> = _playButtonState
+
+    private var timerJob: Job? = null
 
     private val dataFormat by lazy {
         SimpleDateFormat(
@@ -42,20 +45,31 @@ class AudioPlayerViewModel(
     init {
         setupMediaPlayback()
         loadingTrack()
+        viewModelScope.launch {
+            playerInteractor.playerStateFlow().collectLatest { latestPlayerState ->
+                playerState = latestPlayerState
+                updatePlaybackUi()
+                if (playerState == PlayerState.PLAYBACK_COMPLETED) {
+                    timerJob?.cancel()
+                    _currentTrackTime.postValue(dataFormat.format(Date(0)))
+                }
+            }
+        }
     }
 
     companion object {
-        const val TRACK_POSITION_UPDATE_INTERVAL_MS = 200L
+        const val TRACK_POSITION_UPDATE_INTERVAL_MS = 300L
     }
 
     private fun loadingTrack() {
         _screenState.value = AudioPlayerScreenState.Success(track)
     }
 
-    private val currentPositionSetter = object : Runnable {
-        override fun run() {
-            handler.postDelayed(this, TRACK_POSITION_UPDATE_INTERVAL_MS)
-            if (playerState == PlayerState.PLAYING) {
+
+    private fun currentPositionSetter() {
+        timerJob = viewModelScope.launch {
+            while (playerState == PlayerState.PLAYING) {
+                delay(TRACK_POSITION_UPDATE_INTERVAL_MS)
                 _currentTrackTime.postValue(
                     dataFormat.format(playerInteractor.getCurrentPosition())
                 )
@@ -64,18 +78,7 @@ class AudioPlayerViewModel(
     }
 
     private fun setupMediaPlayback() {
-        playerInteractor.preparePlayer(track.previewUrl)
-        playerInteractor.setListener(object : PlayerListener {
-            override fun onStateChange(state: PlayerState) {
-                playerState = state
-                if (state == PlayerState.PLAYBACK_COMPLETED) {
-                    handler.removeCallbacks(currentPositionSetter)
-                    _currentTrackTime.postValue(dataFormat.format(Date(0)))
-                }
-                updatePlaybackUi()
-            }
-        })
-
+        track.previewUrl?.let { playerInteractor.preparePlayer(it) }
     }
 
 
@@ -87,12 +90,12 @@ class AudioPlayerViewModel(
         when (playerState) {
             PlayerState.PLAYING -> {
                 playerInteractor.pausePlayer()
-                handler.removeCallbacks(currentPositionSetter)
+                timerJob?.cancel()
             }
 
             PlayerState.PAUSED, PlayerState.PREPARED, PlayerState.PLAYBACK_COMPLETED -> {
                 playerInteractor.startPlayer()
-                handler.postDelayed(currentPositionSetter, TRACK_POSITION_UPDATE_INTERVAL_MS)
+                currentPositionSetter()
             }
 
             PlayerState.DEFAULT -> {}
@@ -112,7 +115,6 @@ class AudioPlayerViewModel(
     public override fun onCleared() {
         super.onCleared()
         playerInteractor.release()
-        handler.removeCallbacks(currentPositionSetter)
     }
 
     fun handleActivityPause() {

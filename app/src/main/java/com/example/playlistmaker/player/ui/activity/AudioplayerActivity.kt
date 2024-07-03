@@ -100,7 +100,8 @@ class AudioplayerActivity : AppCompatActivity() {
         fun getCoverArtwork() = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 
         val formatter = DateTimeFormatter.ISO_DATE_TIME
-        val releaseDate = LocalDateTime.parse(track.releaseDate, formatter)
+        val releaseDate =
+            track.releaseDate?.let { LocalDateTime.parse(it, formatter).year.toString() } ?: ""
         val collectionNameGroup = findViewById<Group>(R.id.collectionNameGroup)
         if (track.collectionName.isEmpty()) {
             collectionNameGroup.visibility = View.GONE
@@ -111,7 +112,7 @@ class AudioplayerActivity : AppCompatActivity() {
         trackTimeTextView.text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
         collectionNameTextView.text = track.collectionName
-        releaseDateTextView.text = releaseDate.year.toString()
+        releaseDateTextView.text = releaseDate
         primaryGenreNameTextView.text = track.primaryGenreName
         countryTextView.text = track.country
         Glide.with(coverImageView).load(getCoverArtwork()).centerCrop().transform(
