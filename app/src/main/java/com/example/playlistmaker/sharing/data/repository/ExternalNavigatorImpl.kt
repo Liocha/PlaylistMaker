@@ -3,9 +3,8 @@ package com.example.playlistmaker.sharing.data.repository
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import com.example.playlistmaker.sharing.domain.repository.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.model.EmailData
+import com.example.playlistmaker.sharing.domain.repository.ExternalNavigator
 
 class ExternalNavigatorImpl(val context: Context) : ExternalNavigator {
     override fun openLink(termsLink: String) {
@@ -32,7 +31,6 @@ class ExternalNavigatorImpl(val context: Context) : ExternalNavigator {
     }
 
     override fun shareLink(shareAppLink: String) {
-        Log.d("ExternalNavigator", "Sharing link with context: $context")
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, shareAppLink)

@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.media.domain.db.FavoritesInteractor
+import com.example.playlistmaker.media.domain.impl.FavoritesInteractorImpl
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.use_case.impl.MediaPlayerInteractorImpi
 import com.example.playlistmaker.search.domain.use_case.ClearSearchHistory
@@ -43,5 +45,9 @@ val interactorModule = module {
 
     factory<GetSearchHistory> {
         GetSearchHistoryUseCase(get())
+    }
+
+    single<FavoritesInteractor> {
+        FavoritesInteractorImpl(get())
     }
 }

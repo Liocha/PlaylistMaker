@@ -3,7 +3,7 @@ package com.example.playlistmaker.search.domain.repository
 import com.example.playlistmaker.search.domain.model.Track
 
 interface SearchHistoryRepository {
-    fun saveSearchHistory(track: Track)
-    fun getSearchHistory(): List<Track>
+    suspend fun saveSearchHistory(track: Track)
+    suspend fun getSearchHistory(): List<Track>
     fun clearSearchHistory()
 }

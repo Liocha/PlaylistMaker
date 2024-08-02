@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +25,8 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.view_model.SearchState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.utils.Debounce
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -48,6 +51,8 @@ class SearchFragment : Fragment() {
 
     private lateinit var clickDebounceDelay: Debounce<Unit>
 
+    private lateinit var searchInput: EditText
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         fun newInstance() = SearchFragment()
@@ -59,17 +64,19 @@ class SearchFragment : Fragment() {
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        clickDebounceDelay =  Debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
-            this.isClickAllowed = true
-        }
+        clickDebounceDelay =
+            Debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {
+                this.isClickAllowed = true
+            }
 
-        val searchInput = binding.searchInput
+        searchInput = binding.searchInput
         val searchClearButton = binding.searchClearBtn
 
         emptySearchPlaceholder = binding.emptySearchPlaceholder
@@ -80,7 +87,6 @@ class SearchFragment : Fragment() {
         listHistoryItems = binding.listOfHistoryItems
         historyClearBtn = binding.historyClearBtn
         searchItemsView = binding.listOfSearchItems
-
 
         searchClearButton.setOnClickListener {
             viewModel.clearSearchInput()
@@ -184,6 +190,8 @@ class SearchFragment : Fragment() {
         viewModel.showToast.observe(viewLifecycleOwner) {
             showToast(it)
         }
+
+        viewModel.loadSearchHistory()
     }
 
     private fun render(state: SearchState) {
@@ -239,5 +247,21 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun showKeyboard(view: View) {
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadSearchHistory()
+        searchInput.requestFocus()
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(100)
+            showKeyboard(searchInput)
+        }
+        viewModel.updateStateOnResume()
+    }
 
 }
