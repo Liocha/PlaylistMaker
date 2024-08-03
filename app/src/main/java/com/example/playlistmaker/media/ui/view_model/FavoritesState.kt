@@ -7,8 +7,5 @@ sealed class FavoritesState {
         val tracks: List<Track>
     ) : FavoritesState()
 
-    data class Empty(
-        val message: String
-    ) : FavoritesState()
-
+    object Empty : FavoritesState()
 }

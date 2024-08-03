@@ -31,8 +31,8 @@ class AudioplayerActivity : AppCompatActivity() {
     private lateinit var currentTrackTime: TextView
     private lateinit var favoritesButton: ImageButton
 
-    private val track: Track by lazy {
-        intent?.getParcelableExtra("track")!!
+    private val track: Track? by lazy {
+        intent?.getParcelableExtra("track")
     }
 
     private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(track) }
@@ -48,6 +48,12 @@ class AudioplayerActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        if (track == null) {
+            finish()
+            return
+        }
+
         val btnBack = findViewById<ImageButton>(R.id.btn_back)
         btnBack.setOnClickListener {
             finish()

@@ -25,7 +25,7 @@ class FavoriteTracksViewModel(
 
     private fun processResult(tracks: List<Track>) {
         if (tracks.isEmpty()) {
-            renderState(FavoritesState.Empty("Нет избранных треков"))
+            renderState(FavoritesState.Empty)
         } else {
             renderState(FavoritesState.Content(tracks))
         }

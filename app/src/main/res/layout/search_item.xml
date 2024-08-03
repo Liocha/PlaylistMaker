@@ -25,7 +25,7 @@
         android:layout_marginTop="14dp"
         android:layout_toRightOf="@+id/artwork_url_100"
         android:ellipsize="end"
-        android:maxWidth="250dp"
+        android:maxWidth="210dp"
         android:maxLines="1"
         android:textSize="16sp"
         tools:text="Can't Help Falling in Love" />
@@ -37,7 +37,7 @@
         android:layout_marginStart="8dp"
         android:layout_toRightOf="@+id/artwork_url_100"
         android:ellipsize="end"
-        android:maxWidth="250dp"
+        android:maxWidth="150dp"
         android:maxLines="1"
         tools:text="Elvis Presley" />
 

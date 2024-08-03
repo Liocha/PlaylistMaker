@@ -47,7 +47,7 @@ val interactorModule = module {
         GetSearchHistoryUseCase(get())
     }
 
-    single<FavoritesInteractor> {
+    factory<FavoritesInteractor> {
         FavoritesInteractorImpl(get())
     }
 }
