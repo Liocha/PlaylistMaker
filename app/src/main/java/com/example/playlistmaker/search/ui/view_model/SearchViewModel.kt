@@ -100,26 +100,34 @@ class SearchViewModel(
     }
 
     fun onSearchFocusGained() {
-        if (_searchQuery.value == "") {
-            loadSearchHistory()
-            if ((_searchHistory.value?.size ?: 0) > 0) {
-                _isSearchHistoryVisible.value = true
+        viewModelScope.launch {
+            if (_searchQuery.value == "") {
+                loadSearchHistory()
+                if ((_searchHistory.value?.size ?: 0) > 0) {
+                    _isSearchHistoryVisible.value = true
+                }
             }
         }
     }
 
-    private fun loadSearchHistory() {
-        _searchHistory.value = getSearchHistoryUseCase.execute()
+    fun loadSearchHistory() {
+        viewModelScope.launch {
+            _searchHistory.value = getSearchHistoryUseCase.execute()
+        }
     }
 
     fun addTrackToSearchHistory(track: Track) {
-        saveSearchHistoryUseCase.execute(track)
+        viewModelScope.launch {
+            saveSearchHistoryUseCase.execute(track)
+        }
     }
 
     fun clearSearchHistory() {
-        clearSearchHistoryUseCase.execute()
-        loadSearchHistory()
-        _isSearchHistoryVisible.value = false
+        viewModelScope.launch {
+            clearSearchHistoryUseCase.execute()
+            loadSearchHistory()
+            _isSearchHistoryVisible.value = false
+        }
     }
 
     fun clearSearchInput() {
@@ -145,9 +153,11 @@ class SearchViewModel(
 
     fun setSearchHistoryVisible(visible: Boolean) {
         if (visible) {
-            loadSearchHistory()
-            if ((_searchHistory.value?.size ?: 0) > 0) {
-                _isSearchHistoryVisible.value = true
+            viewModelScope.launch {
+                loadSearchHistory()
+                if ((_searchHistory.value?.size ?: 0) > 0) {
+                    _isSearchHistoryVisible.value = true
+                }
             }
         } else {
             _isSearchHistoryVisible.value = false
@@ -157,5 +167,11 @@ class SearchViewModel(
     fun repeatLastSearchQuery() {
         this.latestSearchText = ""
         _searchQuery.value?.let { searchDebounce(it) }
+    }
+
+    fun updateStateOnResume() {
+        if (_searchQuery.value != "") {
+            latestSearchText?.let { searchRequest(it) }
+        }
     }
 }

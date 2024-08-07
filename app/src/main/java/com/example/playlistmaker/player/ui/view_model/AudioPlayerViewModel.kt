@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
+import com.example.playlistmaker.media.domain.db.FavoritesInteractor
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
@@ -18,7 +19,8 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val track: Track,
-    private val playerInteractor: MediaPlayerInteractor
+    private val playerInteractor: MediaPlayerInteractor,
+    private val favoritesInteractor: FavoritesInteractor
 ) : ViewModel() {
 
     private val _screenState =
@@ -32,6 +34,9 @@ class AudioPlayerViewModel(
 
     private val _playButtonState = MutableLiveData<Int>()
     val playButtonState: LiveData<Int> = _playButtonState
+
+    private val _isFavorite = MutableLiveData(track.isFavorite)
+    val isFavorite: LiveData<Boolean> = _isFavorite
 
     private var timerJob: Job? = null
 
@@ -122,4 +127,16 @@ class AudioPlayerViewModel(
         updatePlaybackUi()
     }
 
+    fun onFavoriteClicked() {
+        val isCurrentlyFavorite = isFavorite.value == true
+        _isFavorite.postValue(!isCurrentlyFavorite)
+
+        viewModelScope.launch {
+            if (isCurrentlyFavorite) {
+                favoritesInteractor.removeFavoriteTrack(track.trackId)
+            } else {
+                favoritesInteractor.addFavoriteTrack(track)
+            }
+        }
+    }
 }

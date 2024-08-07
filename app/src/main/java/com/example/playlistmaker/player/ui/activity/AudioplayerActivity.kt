@@ -29,9 +29,10 @@ class AudioplayerActivity : AppCompatActivity() {
 
     private lateinit var playButton: ImageButton
     private lateinit var currentTrackTime: TextView
+    private lateinit var favoritesButton: ImageButton
 
-    private val track: Track by lazy {
-        intent?.getParcelableExtra("track")!!
+    private val track: Track? by lazy {
+        intent?.getParcelableExtra("track")
     }
 
     private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(track) }
@@ -47,12 +48,19 @@ class AudioplayerActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        if (track == null) {
+            finish()
+            return
+        }
+
         val btnBack = findViewById<ImageButton>(R.id.btn_back)
         btnBack.setOnClickListener {
             finish()
         }
 
         playButton = findViewById(R.id.btnPlay)
+        favoritesButton = findViewById(R.id.btnLike)
 
         currentTrackTime = findViewById(R.id.currentTrackTime)
 
@@ -81,6 +89,17 @@ class AudioplayerActivity : AppCompatActivity() {
         }
 
         playButton.setOnClickListener { viewModel.playbackControl() }
+        favoritesButton.setOnClickListener { viewModel.onFavoriteClicked() }
+
+        viewModel.isFavorite.observe(this) { isFavorite ->
+            if (isFavorite) {
+                favoritesButton.setImageResource(R.drawable.ic_favorite_track_active)
+                favoritesButton.setSelected(isFavorite);
+            } else {
+                favoritesButton.setImageResource(R.drawable.ic_favorite_track_inactive)
+                favoritesButton.setSelected(isFavorite);
+            }
+        }
 
     }
 
