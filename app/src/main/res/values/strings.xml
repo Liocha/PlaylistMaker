@@ -38,4 +38,19 @@
     <string name="new_playlist">Новый плейлист</string>
     <string name="tab_placeholder">Раздел</string>
     <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="newPlaylist">Новый плейлист</string>
+    <string name="create">Создать</string>
+    <string name="track_added_to_playlist">Добавлено в плейлист %1$s</string>
+    <string name="track_already_in_playlist">Трек уже добавлен в плейлист %1$s</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="playlist_name_Input_hint">Название*</string>
+    <string name="playlist_description_Input_hint">Описание</string>
+    <string name="playlist_created_message">Плейлист %1$s создан</string>
+    <string name="dialog_title_finish_creation">Завершить создание плейлиста?</string>
+    <string name="dialog_message_unsaved_data">Все несохраненные данные будут потеряны</string>
+    <string name="dialog_button_cancel">Отмена</string>
+    <string name="dialog_button_finish">Завершить</string>
+    <string name="track_singular">трек</string>
+    <string name="track_few">трека</string>
+    <string name="track_many">треков</string>
 </resources>

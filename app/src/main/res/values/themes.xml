@@ -14,4 +14,9 @@
     <style name="Activity.Search.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker"></style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
+
+    <style name="ThemeOverlay.App.Snackbar" parent="">
+        <item name="colorPrimary">@color/active_navigation_element</item>
+        <item name="colorOnSurface">@color/yp_blue_light</item>
+    </style>
 </resources>

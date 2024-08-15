@@ -5,10 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.media.domain.db.FavoritesInteractor
+import com.example.playlistmaker.media.domain.interactor.FavoritesInteractor
+import com.example.playlistmaker.media.domain.interactor.PlaylistInteractor
+import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.domain.use_case.MediaPlayerInteractor
 import com.example.playlistmaker.search.domain.model.Track
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -20,7 +24,9 @@ import java.util.Locale
 class AudioPlayerViewModel(
     private val track: Track,
     private val playerInteractor: MediaPlayerInteractor,
-    private val favoritesInteractor: FavoritesInteractor
+    private val favoritesInteractor: FavoritesInteractor,
+    private val playlistInteractor: PlaylistInteractor,
+    private val gson: Gson
 ) : ViewModel() {
 
     private val _screenState =
@@ -38,6 +44,9 @@ class AudioPlayerViewModel(
     private val _isFavorite = MutableLiveData(track.isFavorite)
     val isFavorite: LiveData<Boolean> = _isFavorite
 
+    private val _toastMessage = MutableLiveData<Pair<Int, String>>()
+    val toastMessage: LiveData<Pair<Int, String>> get() = _toastMessage
+
     private var timerJob: Job? = null
 
     private val dataFormat by lazy {
@@ -46,6 +55,9 @@ class AudioPlayerViewModel(
             Locale.getDefault()
         )
     }
+
+    private val _playlists = MutableLiveData<List<Playlist>>(emptyList())
+    val playlists: LiveData<List<Playlist>> get() = _playlists
 
     init {
         setupMediaPlayback()
@@ -60,6 +72,11 @@ class AudioPlayerViewModel(
                 }
             }
         }
+
+        viewModelScope.launch {
+            playlistInteractor.getAll().collect { playlists -> _playlists.postValue(playlists) }
+        }
+
     }
 
     companion object {
@@ -139,4 +156,29 @@ class AudioPlayerViewModel(
             }
         }
     }
+
+    fun addTrackToPlaylist(playlist: Playlist) {
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        val trackIds: MutableList<String> =
+            gson.fromJson(playlist.trackIdList, type) ?: mutableListOf()
+        if (!trackIds.contains(track.trackId)) {
+            trackIds.add(track.trackId)
+            val tracksCount = trackIds.count()
+            val trackIdList = gson.toJson(trackIds)
+            viewModelScope.launch {
+                playlistInteractor.updateTrackIdList(playlist.id, trackIdList, tracksCount)
+                playlistInteractor.addTrack(track)
+                showToast(R.string.track_added_to_playlist, playlist.name)
+
+            }
+        } else {
+            showToast(R.string.track_already_in_playlist, playlist.name)
+        }
+    }
+
+    private fun showToast(resourceId: Int, arg: String) {
+        _toastMessage.postValue(Pair(resourceId, arg))
+    }
+
+
 }

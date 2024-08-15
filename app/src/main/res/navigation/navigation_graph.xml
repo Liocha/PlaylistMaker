@@ -26,18 +26,26 @@
         android:id="@+id/mediaFragment"
         android:name="com.example.playlistmaker.media.ui.MediaFragment"
         android:label="fragment_media"
-        tools:layout="@layout/fragment_media" >
+        tools:layout="@layout/fragment_media">
         <action
             android:id="@+id/action_mediaFragment_to_audioplayerActivity"
-            app:destination="@id/audioplayerActivity" >
+            app:destination="@id/audioplayerActivity">
             <argument
                 android:name="track"
                 app:argType="com.example.playlistmaker.search.domain.model.Track" />
         </action>
+        <action
+            android:id="@+id/action_mediaFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment" />
     </fragment>
     <activity
         android:id="@+id/audioplayerActivity"
         android:name="com.example.playlistmaker.player.ui.activity.AudioplayerActivity"
         android:label="activity_audioplayer"
         tools:layout="@layout/activity_audioplayer" />
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.CreatePlaylistFragment"
+        android:label="CreatePlaylistFragment"
+        tools:layout="@layout/fragment_create_playlist"></fragment>
 </navigation>

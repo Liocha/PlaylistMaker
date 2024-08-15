@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+
     <style name="EditSearchStyle">
         <item name="android:textColorHint">@color/yp_black</item>
         <item name="android:textColor">@color/yp_black</item>
         <item name="android:drawableTint">@color/yp_black</item>
     </style>
+
     <style name="ItemSearchSubText">
         <item name="android:textColor">@color/yp_white</item>
         <item name="android:layout_width">wrap_content</item>
@@ -68,5 +70,14 @@
         <item name="itemIconTint">@color/bottom_nav_item_color</item>
         <item name="itemBackground">@color/yp_black</item>
         <item name="itemTextColor">@color/bottom_nav_item_color</item>
+    </style>
+
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">text</item>
+        <item name="android:layout_marginHorizontal">17dp</item>
+        <item name="boxStrokeColor">@color/yp_blue</item>
+        <item name="hintTextColor">@color/yp_blue</item>
     </style>
 </resources>
