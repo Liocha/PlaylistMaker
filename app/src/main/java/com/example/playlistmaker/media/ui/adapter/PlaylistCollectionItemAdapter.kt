@@ -41,7 +41,7 @@ class PlaylistCollectionItemAdapter(
                 val imageUri = Uri.parse(playlist.pathCover)
                 cover.setImageURI(imageUri)
             } else {
-                cover.setImageDrawable(null)
+                cover.setImageResource(R.drawable.placeholder_artwork)
             }
         }
     }
