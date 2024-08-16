@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.domain.interactor.impl
 
+import android.net.Uri
 import com.example.playlistmaker.media.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.repository.PlaylistRepository
@@ -21,5 +22,9 @@ class PlaylistInteractorImpl(private val repository: PlaylistRepository) : Playl
 
     override suspend fun addTrack(track: Track) {
         repository.addTrack(track)
+    }
+
+    override suspend fun saveImageToPrivateStorage(uri: Uri): Uri? {
+       return repository.saveImageToPrivateStorage(uri)
     }
 }

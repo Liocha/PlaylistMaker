@@ -18,6 +18,7 @@ import com.example.playlistmaker.sharing.data.repository.ExternalNavigatorImpl
 import com.example.playlistmaker.sharing.data.repository.ResourceShareProviderImpl
 import com.example.playlistmaker.sharing.domain.repository.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.repository.ResourceShareProvider
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 
@@ -55,6 +56,6 @@ val repositoryModule = module {
     factory { PlaylistDbConverter() }
 
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(get(), get(), get())
+        PlaylistRepositoryImpl(androidContext(),get(), get(), get())
     }
 }

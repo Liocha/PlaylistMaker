@@ -1,17 +1,12 @@
 package com.example.playlistmaker.media.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -22,11 +17,6 @@ import com.example.playlistmaker.media.ui.view_model.NavigationState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 
 class CreatePlaylistFragment : Fragment() {
@@ -54,37 +44,12 @@ class CreatePlaylistFragment : Fragment() {
         }
         binding.btnCreate.setOnClickListener { viewModel.onCreateHandler() }
 
-        fun saveImageToPrivateStorage(uri: Uri): Uri? {
-            val filePath = File(
-                requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                "playlist_covers"
-            )
-            if (!filePath.exists()) {
-                filePath.mkdirs()
-            }
-            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val fileName = "IMG_$timeStamp.jpg"
-            val file = File(filePath, fileName)
-            val inputStream = requireContext().contentResolver.openInputStream(uri)
-            val outputStream = FileOutputStream(file)
-            BitmapFactory
-                .decodeStream(inputStream)
-                .compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, outputStream)
-
-            return FileProvider.getUriForFile(
-                requireContext(),
-                "${requireContext().packageName}.fileprovider",
-                file
-            )
-        }
-
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
                     binding.cover.setImageURI(uri)
                     binding.cover.setBackgroundResource(0)
-                    val imageUri = saveImageToPrivateStorage(uri)
-                    viewModel.addCoverUri(imageUri?.toString() ?: "")
+                    viewModel.saveImageToPrivateStorage(uri)
                 }
             }
 
@@ -159,6 +124,5 @@ class CreatePlaylistFragment : Fragment() {
 
     companion object {
         fun newInstance() = CreatePlaylistFragment()
-        private const val JPEG_COMPRESSION_QUALITY = 30
     }
 }

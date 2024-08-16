@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui.view_model
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,10 +34,6 @@ class CreatePlaylistViewModel(
 
     }
 
-    fun addCoverUri(uri: String) {
-        _localUri.value = uri
-    }
-
     fun onCreateHandler() {
         if (_name.value.isNullOrEmpty()) {
             return
@@ -64,4 +61,12 @@ class CreatePlaylistViewModel(
     fun resetNavigationState() {
         _navigationState.postValue(NavigationState.DefaultNothing)
     }
+
+    fun saveImageToPrivateStorage(uri: Uri) {
+        viewModelScope.launch {
+            val localUri = playlistInteractor.saveImageToPrivateStorage(uri)
+            _localUri.value = localUri.toString()
+        }
+    }
+
 }
