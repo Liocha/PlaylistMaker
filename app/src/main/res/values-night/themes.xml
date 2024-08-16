@@ -5,6 +5,7 @@
         <item name="colorSecondary">@color/yp_blue</item>
         <item name="android:textColor">@color/yp_white</item>
         <item name="iconTint">@color/yp_white</item>
+        <item name="colorPrimary">@color/yp_blue</item>
     </style>
     <style name="Activity.Main.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
         <item name="colorPrimary">@color/yp_white</item>
