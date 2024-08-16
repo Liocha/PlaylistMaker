@@ -59,6 +59,9 @@ class AudioPlayerViewModel(
     private val _playlists = MutableLiveData<List<Playlist>>(emptyList())
     val playlists: LiveData<List<Playlist>> get() = _playlists
 
+    private val _trackAdded = MutableLiveData<Boolean>()
+    val trackAdded: LiveData<Boolean> get() = _trackAdded
+
     init {
         setupMediaPlayback()
         loadingTrack()
@@ -164,10 +167,11 @@ class AudioPlayerViewModel(
                 playlistInteractor.updateTrackIdList(playlist.id, trackIdList, tracksCount)
                 playlistInteractor.addTrack(track)
                 showToast(R.string.track_added_to_playlist, playlist.name)
-
+                _trackAdded.postValue(true)
             }
         } else {
             showToast(R.string.track_already_in_playlist, playlist.name)
+            _trackAdded.postValue(false)
         }
     }
 

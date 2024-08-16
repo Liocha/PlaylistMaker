@@ -183,6 +183,12 @@ class AudioplayerActivity : AppCompatActivity() {
 
         fragmentContainer = findViewById(R.id.fragment_container)
         main = findViewById(R.id.main)
+
+        viewModel.trackAdded.observe(this) { isAdded ->
+            if (isAdded) {
+               bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
     }
 
     private fun showCreatePlaylistFragment() {
