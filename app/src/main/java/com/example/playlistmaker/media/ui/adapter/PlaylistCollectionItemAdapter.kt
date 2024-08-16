@@ -9,13 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.playlistmaker.R
 import com.example.playlistmaker.media.domain.model.Playlist
-import androidx.recyclerview.widget.RecyclerView.ViewHolder as ViewHolder1
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 class PlaylistCollectionItemAdapter(
     private val getCountEnding: (tracksCount: Int) -> String,
     private val onClick: (Playlist) -> Unit
-) :
-    Adapter<PlaylistCollectionItemAdapter.PlaylistCollectionItemViewHolder>() {
+) : Adapter<PlaylistCollectionItemAdapter.PlaylistCollectionItemViewHolder>() {
 
     private var playlistCollection = listOf<Playlist>()
 
@@ -28,7 +27,7 @@ class PlaylistCollectionItemAdapter(
     class PlaylistCollectionItemViewHolder(
         rootView: View,
         private val getCountEnding: (Int) -> String
-    ) : ViewHolder1(rootView) {
+    ) : ViewHolder(rootView) {
         private val name: TextView = rootView.findViewById(R.id.name)
         private val count: TextView = rootView.findViewById(R.id.count)
         private val cover: ImageView = rootView.findViewById(R.id.cover)

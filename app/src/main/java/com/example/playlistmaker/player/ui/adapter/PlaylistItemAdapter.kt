@@ -25,8 +25,10 @@ class PlaylistItemAdapter(
         notifyDataSetChanged()
     }
 
-    class PlaylistItemViewHolder(rootView: View, private val getCountEnding: (Int) -> String) :
-        ViewHolder(rootView) {
+    class PlaylistItemViewHolder(
+        rootView: View,
+        private val getCountEnding: (Int) -> String
+    ) : ViewHolder(rootView) {
         private val name: TextView
         private val count: TextView
         private val cover: ImageView
