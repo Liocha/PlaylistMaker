@@ -13,14 +13,14 @@ class CreatePlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
-    val _name = MutableLiveData("")
-    val _description = MutableLiveData("")
-    val _localUri = MutableLiveData("")
+    private val _name = MutableLiveData("")
+    private val _description = MutableLiveData("")
+    private val _localUri = MutableLiveData("")
 
-    val _canCreatePlaylist = MutableLiveData(false)
+    private val _canCreatePlaylist = MutableLiveData(false)
     val canCreatePlaylist: LiveData<Boolean> get() = _canCreatePlaylist
 
-    val _navigationState = MutableLiveData<NavigationState>(NavigationState.DefaultNothing)
+    private val _navigationState = MutableLiveData<NavigationState>(NavigationState.DefaultNothing)
     val navigationState: LiveData<NavigationState> get() = _navigationState
 
 
