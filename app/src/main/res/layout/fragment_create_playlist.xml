@@ -20,7 +20,7 @@
             android:layout_marginStart="20dp"
             android:background="@null"
             android:contentDescription="@null"
-            app:layout_constraintBottom_toTopOf="@id/guideline2"
+            app:layout_constraintBottom_toTopOf="@id/borderHeaderGuideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_arrow_left" />
@@ -35,12 +35,12 @@
             android:text="@string/newPlaylist"
             android:textFontWeight="500"
             android:textSize="22sp"
-            app:layout_constraintBottom_toTopOf="@id/guideline2"
+            app:layout_constraintBottom_toTopOf="@id/borderHeaderGuideline"
             app:layout_constraintStart_toEndOf="@+id/btn_back"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
+            android:id="@+id/borderHeaderGuideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -59,7 +59,7 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/borderHeaderGuideline"
             app:shapeAppearanceOverlay="@style/RoundedImageViewStyle" />
 
         <com.google.android.material.textfield.TextInputLayout
