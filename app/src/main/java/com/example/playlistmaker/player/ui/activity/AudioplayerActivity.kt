@@ -46,6 +46,7 @@ class AudioplayerActivity : AppCompatActivity() {
     private lateinit var bottomSheetContainer: LinearLayout
     private lateinit var fragmentContainer: FrameLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var overlay: View
 
     private lateinit var main: ScrollView
 
@@ -134,7 +135,7 @@ class AudioplayerActivity : AppCompatActivity() {
 
         btnAddToPlaylist = findViewById(R.id.btnAdd)
 
-        val overlay = findViewById<View>(R.id.overlay)
+        overlay = findViewById<View>(R.id.overlay)
 
         bottomSheetContainer = findViewById(R.id.standard_bottom_sheet)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
@@ -194,8 +195,9 @@ class AudioplayerActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commit()
 
-        fragmentContainer.visibility = View.VISIBLE
+        overlay.visibility = View.GONE
         main.visibility = View.GONE
+        fragmentContainer.visibility = View.VISIBLE
     }
 
     private fun updateUi(track: Track) {
