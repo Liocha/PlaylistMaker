@@ -25,6 +25,7 @@ import com.example.playlistmaker.player.ui.adapter.PlaylistItemAdapter
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerScreenState
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.utils.TextHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -113,16 +114,21 @@ class AudioplayerActivity : AppCompatActivity() {
         viewModel.isFavorite.observe(this) { isFavorite ->
             if (isFavorite) {
                 favoritesButton.setImageResource(R.drawable.ic_favorite_track_active)
-                favoritesButton.setSelected(isFavorite);
+                favoritesButton.setSelected(isFavorite)
             } else {
                 favoritesButton.setImageResource(R.drawable.ic_favorite_track_inactive)
-                favoritesButton.setSelected(isFavorite);
+                favoritesButton.setSelected(isFavorite)
             }
         }
 
         playlistsItemsView = findViewById(R.id.list_of_playlist)
         playlistItemAdapter =
-            PlaylistItemAdapter(::getCountEnding) { viewModel.addTrackToPlaylist(it) }
+            PlaylistItemAdapter({ count ->
+                TextHelper.getCountEnding(
+                    this,
+                    count
+                )
+            }) { viewModel.addTrackToPlaylist(it) }
 
         playlistsItemsView.apply {
             layoutManager = LinearLayoutManager(this@AudioplayerActivity)
@@ -250,18 +256,5 @@ class AudioplayerActivity : AppCompatActivity() {
             viewModel.onCleared()
         }
     }
-
-    fun getCountEnding(count: Int): String {
-        val remainderPerHundred = count % 100
-        val remainderByTen = count % 10
-
-        return when {
-            remainderPerHundred in 11..19 -> getString(R.string.track_many)
-            remainderByTen == 1 -> getString(R.string.track_singular)
-            remainderByTen in 2..4 -> getString(R.string.track_few)
-            else -> getString(R.string.track_many)
-        }
-    }
-
 }
 

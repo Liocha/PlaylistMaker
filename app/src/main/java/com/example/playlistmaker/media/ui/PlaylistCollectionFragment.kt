@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCollectionBinding
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.ui.adapter.PlaylistCollectionItemAdapter
 import com.example.playlistmaker.media.ui.view_model.PlaylistCollectionViewModel
 import com.example.playlistmaker.media.ui.view_model.PlaylistsState
+import com.example.playlistmaker.utils.TextHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistCollectionFragment : Fragment() {
@@ -38,7 +38,12 @@ class PlaylistCollectionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         playlistCollectionItemsView = binding.playlistCollectionItems
-        playlistCollectionItemAdapter = PlaylistCollectionItemAdapter(::getCountEnding) { }
+        playlistCollectionItemAdapter = PlaylistCollectionItemAdapter({ count ->
+            TextHelper.getCountEnding(
+                requireContext(),
+                count
+            )
+        }) { }
         emptyStateContainer = binding.emptyStateContainer
 
         playlistCollectionItemsView.apply {
@@ -71,18 +76,6 @@ class PlaylistCollectionFragment : Fragment() {
         playlistCollectionItemAdapter.updateData(playlists)
         emptyStateContainer.visibility = View.GONE
         playlistCollectionItemsView.visibility = View.VISIBLE
-    }
-
-    fun getCountEnding(count: Int): String {
-        val remainderPerHundred = count % 100
-        val remainderByTen = count % 10
-
-        return when {
-            remainderPerHundred in 11..19 -> getString(R.string.track_many)
-            remainderByTen == 1 -> getString(R.string.track_singular)
-            remainderByTen in 2..4 -> getString(R.string.track_few)
-            else -> getString(R.string.track_many)
-        }
     }
 
     companion object {
