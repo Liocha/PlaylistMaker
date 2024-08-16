@@ -31,11 +31,6 @@ import java.util.Locale
 
 class CreatePlaylistFragment : Fragment() {
 
-
-    companion object {
-        fun newInstance() = CreatePlaylistFragment()
-    }
-
     lateinit var binding: FragmentCreatePlaylistBinding
     val viewModel: CreatePlaylistViewModel by viewModel()
     lateinit var confirmDialog: MaterialAlertDialogBuilder
@@ -43,7 +38,7 @@ class CreatePlaylistFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCreatePlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -58,8 +53,6 @@ class CreatePlaylistFragment : Fragment() {
             )
         }
         binding.btnCreate.setOnClickListener { viewModel.onCreateHandler() }
-
-
 
         fun saveImageToPrivateStorage(uri: Uri): Uri? {
             val filePath = File(
@@ -162,5 +155,9 @@ class CreatePlaylistFragment : Fragment() {
         } catch (e: IllegalStateException) {
             requireActivity().supportFragmentManager.popBackStack()
         }
+    }
+
+    companion object {
+        fun newInstance() = CreatePlaylistFragment()
     }
 }

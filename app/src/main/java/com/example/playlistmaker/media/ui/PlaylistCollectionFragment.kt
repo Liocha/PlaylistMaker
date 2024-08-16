@@ -22,13 +22,7 @@ class PlaylistCollectionFragment : Fragment() {
     private lateinit var playlistCollectionItemsView: RecyclerView
     private lateinit var playlistCollectionItemAdapter: PlaylistCollectionItemAdapter
     private lateinit var emptyStateContainer: ConstraintLayout
-
-    companion object {
-        fun newInstance() = PlaylistCollectionFragment()
-    }
-
     private val viewModel: PlaylistCollectionViewModel by viewModel()
-
     lateinit var binding: FragmentPlaylistCollectionBinding
 
     override fun onCreateView(
@@ -52,7 +46,7 @@ class PlaylistCollectionFragment : Fragment() {
             adapter = playlistCollectionItemAdapter
         }
 
-        var btnCreateNewPlaylist = binding.btnCreatePlaylist
+        val btnCreateNewPlaylist = binding.btnCreatePlaylist
         btnCreateNewPlaylist.setOnClickListener {
             val action = MediaFragmentDirections.actionMediaFragmentToCreatePlaylistFragment()
             findNavController().navigate(action)
@@ -89,5 +83,9 @@ class PlaylistCollectionFragment : Fragment() {
             remainderByTen in 2..4 -> getString(R.string.track_few)
             else -> getString(R.string.track_many)
         }
+    }
+
+    companion object {
+        fun newInstance() = PlaylistCollectionFragment()
     }
 }

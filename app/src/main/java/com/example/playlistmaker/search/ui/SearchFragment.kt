@@ -53,11 +53,6 @@ class SearchFragment : Fragment() {
 
     private lateinit var searchInput: EditText
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        fun newInstance() = SearchFragment()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -188,7 +183,9 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.showToast.observe(viewLifecycleOwner) {
-            showToast(it)
+            if (it != null) {
+                showToast(it)
+            }
         }
 
         viewModel.loadSearchHistory()
@@ -264,4 +261,8 @@ class SearchFragment : Fragment() {
         viewModel.updateStateOnResume()
     }
 
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        fun newInstance() = SearchFragment()
+    }
 }

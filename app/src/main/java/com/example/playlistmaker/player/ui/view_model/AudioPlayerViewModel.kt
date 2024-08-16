@@ -79,14 +79,9 @@ class AudioPlayerViewModel(
 
     }
 
-    companion object {
-        const val TRACK_POSITION_UPDATE_INTERVAL_MS = 300L
-    }
-
     private fun loadingTrack() {
         _screenState.value = AudioPlayerScreenState.Success(track)
     }
-
 
     private fun currentPositionSetter() {
         timerJob = viewModelScope.launch {
@@ -180,5 +175,7 @@ class AudioPlayerViewModel(
         _toastMessage.postValue(Pair(resourceId, arg))
     }
 
-
+    companion object {
+        const val TRACK_POSITION_UPDATE_INTERVAL_MS = 300L
+    }
 }
