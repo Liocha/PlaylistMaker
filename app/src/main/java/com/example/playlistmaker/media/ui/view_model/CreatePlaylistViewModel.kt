@@ -15,7 +15,6 @@ class CreatePlaylistViewModel(
 
     private val _name = MutableLiveData("")
     private val _description = MutableLiveData("")
-    private val _localUri = MutableLiveData("")
 
     private val _canCreatePlaylist = MutableLiveData(false)
     val canCreatePlaylist: LiveData<Boolean> get() = _canCreatePlaylist
@@ -23,6 +22,7 @@ class CreatePlaylistViewModel(
     private val _navigationState = MutableLiveData<NavigationState>(NavigationState.DefaultNothing)
     val navigationState: LiveData<NavigationState> get() = _navigationState
 
+    private val _selectedImageUri = MutableLiveData<Uri>()
 
     fun onNameChanged(name: String) {
         _name.postValue(name)
@@ -40,10 +40,14 @@ class CreatePlaylistViewModel(
         }
 
         viewModelScope.launch {
+           val savedImagePath = _selectedImageUri.value?.let { uri ->
+                playlistInteractor.saveImageToPrivateStorage(uri)
+            } ?: ""
+
             val playlist = Playlist(
                 name = _name.value.toString(),
                 description = _description.value.toString(),
-                pathCover = _localUri.value.toString()
+                pathCover = savedImagePath
             )
             playlistInteractor.cretePlaylist(playlist)
             _navigationState.postValue(NavigationState.PlaylistCreated(playlist.name))
@@ -51,7 +55,7 @@ class CreatePlaylistViewModel(
     }
 
     fun btnBackHandler() {
-        if (_name.value.isNullOrEmpty() && _description.value.isNullOrEmpty() && _localUri.value.isNullOrEmpty()) {
+        if (_name.value.isNullOrEmpty() && _description.value.isNullOrEmpty() && _selectedImageUri.value == null) {
             _navigationState.postValue(NavigationState.NavigateBack)
         } else {
             _navigationState.postValue(NavigationState.ShowDialogBeforeNavigateBack)
@@ -62,11 +66,8 @@ class CreatePlaylistViewModel(
         _navigationState.postValue(NavigationState.DefaultNothing)
     }
 
-    fun saveImageToPrivateStorage(uri: Uri) {
-        viewModelScope.launch {
-            val localUri = playlistInteractor.saveImageToPrivateStorage(uri)
-            _localUri.value = localUri.toString()
-        }
+    fun setSelectedImageUri(uri: Uri) {
+        _selectedImageUri.value = uri
     }
 
 }

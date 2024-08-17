@@ -49,7 +49,7 @@ class CreatePlaylistFragment : Fragment() {
                 if (uri != null) {
                     binding.cover.setImageURI(uri)
                     binding.cover.setBackgroundResource(0)
-                    viewModel.saveImageToPrivateStorage(uri)
+                    viewModel.setSelectedImageUri(uri)
                 }
             }
 

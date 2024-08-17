@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.playlistmaker.R
 import com.example.playlistmaker.media.domain.model.Playlist
+import java.io.File
 
 
 class PlaylistItemAdapter(
@@ -43,7 +44,7 @@ class PlaylistItemAdapter(
             name.text = playlist.name
             count.text = "${playlist.tracksCount} ${getCountEnding(playlist.tracksCount)}"
             if (!playlist.pathCover.isNullOrEmpty()) {
-                val imageUri = Uri.parse(playlist.pathCover)
+                val imageUri = Uri.fromFile(File(playlist.pathCover))
                 cover.setImageURI(imageUri)
             } else {
                 cover.setImageResource(R.drawable.placeholder_artwork)

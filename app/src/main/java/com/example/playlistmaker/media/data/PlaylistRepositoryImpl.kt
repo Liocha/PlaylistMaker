@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import androidx.core.content.FileProvider
 import com.example.playlistmaker.media.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.media.data.converters.TrackDbConverter
 import com.example.playlistmaker.media.data.db.AppDatabase
@@ -46,7 +45,7 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistTrackDao().addTrack(trackDbConverter.map(track))
     }
 
-    override suspend fun saveImageToPrivateStorage(uri: Uri): Uri? {
+    override suspend fun saveImageToPrivateStorage(uri: Uri): String? {
         val filePath = File(
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "playlist_covers"
@@ -63,11 +62,7 @@ class PlaylistRepositoryImpl(
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, outputStream)
 
-        return FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            file
-        )
+        return file.absolutePath
     }
 
     private fun convertFromPlaylistEntity(playlistsEntity: List<PlaylistEntity>): List<Playlist> {
