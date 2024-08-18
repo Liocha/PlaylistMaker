@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import com.example.playlistmaker.media.data.converters.PlaylistDbConverter
-import com.example.playlistmaker.media.data.converters.TrackDbConverter
+import com.example.playlistmaker.media.data.converters.PlaylistTrackDbConverter
 import com.example.playlistmaker.media.data.db.AppDatabase
 import com.example.playlistmaker.media.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.media.domain.model.Playlist
@@ -24,8 +24,7 @@ class PlaylistRepositoryImpl(
     private val context: Context,
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
-    private val trackDbConverter: TrackDbConverter
-
+    private val playlistTrackDbConverter: PlaylistTrackDbConverter
 ) : PlaylistRepository {
     override suspend fun createPlaylist(playlist: Playlist) {
         val playlistEntity = playlistDbConverter.map(playlist)
@@ -42,7 +41,7 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun addTrack(track: Track) {
-        appDatabase.playlistTrackDao().addTrack(trackDbConverter.map(track))
+        appDatabase.playlistTrackDao().addTrack(playlistTrackDbConverter.map(track))
     }
 
     override suspend fun saveImageToPrivateStorage(uri: Uri): String? {
