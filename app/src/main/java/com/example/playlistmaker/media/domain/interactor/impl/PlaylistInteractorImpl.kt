@@ -24,7 +24,7 @@ class PlaylistInteractorImpl(private val repository: PlaylistRepository) : Playl
         repository.addTrack(track)
     }
 
-    override suspend fun saveImageToPrivateStorage(uri: Uri): String? {
+    override suspend fun saveImageToPrivateStorage(uri: Uri): Uri {
        return repository.saveImageToPrivateStorage(uri)
     }
 }

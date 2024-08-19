@@ -42,7 +42,7 @@ class CreatePlaylistViewModel(
         viewModelScope.launch {
            val savedImagePath = _selectedImageUri.value?.let { uri ->
                 playlistInteractor.saveImageToPrivateStorage(uri)
-            } ?: ""
+            }
 
             val playlist = Playlist(
                 name = _name.value.toString(),

@@ -44,7 +44,7 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistTrackDao().addTrack(playlistTrackDbConverter.map(track))
     }
 
-    override suspend fun saveImageToPrivateStorage(uri: Uri): String? {
+    override suspend fun saveImageToPrivateStorage(uri: Uri): Uri {
         val filePath = File(
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "playlist_covers"
@@ -61,7 +61,7 @@ class PlaylistRepositoryImpl(
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, outputStream)
 
-        return file.absolutePath
+        return Uri.fromFile(file)
     }
 
     private fun convertFromPlaylistEntity(playlistsEntity: List<PlaylistEntity>): List<Playlist> {

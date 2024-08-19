@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ea8d10c91f3f5605ab12ec58bd6940a3",
+    "identityHash": "73d694e6c7c6e61fc1ad3eac075fe97a",
     "entities": [
       {
         "tableName": "track_table",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "playlists",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `path_cover` TEXT NOT NULL, `track_id_list` TEXT NOT NULL, `tracks_count` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `path_cover` TEXT, `track_id_list` TEXT NOT NULL, `tracks_count` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -104,7 +104,7 @@
             "fieldPath": "pathCover",
             "columnName": "path_cover",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "trackIdList",
@@ -206,7 +206,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ea8d10c91f3f5605ab12ec58bd6940a3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '73d694e6c7c6e61fc1ad3eac075fe97a')"
     ]
   }
 }

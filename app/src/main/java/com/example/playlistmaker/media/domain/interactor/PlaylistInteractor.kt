@@ -10,5 +10,5 @@ interface PlaylistInteractor {
     fun getAll(): Flow<List<Playlist>>
     suspend fun updateTrackIdList(playlistId: Int, trackIdList: String, tracksCount: Int)
     suspend fun addTrack(track: Track)
-    suspend fun saveImageToPrivateStorage(uri: Uri): String?
+    suspend fun saveImageToPrivateStorage(uri: Uri): Uri
 }

@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.ui.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.playlistmaker.R
 import com.example.playlistmaker.media.domain.model.Playlist
-import java.io.File
 
 
 class PlaylistItemAdapter(
@@ -43,11 +41,10 @@ class PlaylistItemAdapter(
         fun bind(playlist: Playlist) {
             name.text = playlist.name
             count.text = "${playlist.tracksCount} ${getCountEnding(playlist.tracksCount)}"
-            if (!playlist.pathCover.isNullOrEmpty()) {
-                val imageUri = Uri.fromFile(File(playlist.pathCover))
-                cover.setImageURI(imageUri)
-            } else {
+            if (playlist.pathCover == null) {
                 cover.setImageResource(R.drawable.placeholder_artwork)
+            } else {
+                cover.setImageURI(playlist.pathCover)
             }
         }
     }
