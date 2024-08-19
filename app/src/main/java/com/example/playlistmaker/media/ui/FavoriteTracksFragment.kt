@@ -21,14 +21,7 @@ class FavoriteTracksFragment : Fragment() {
     private lateinit var favoritesItemAdapter: FavoritesItemAdapter
     private lateinit var favoritesItemsView: RecyclerView
     private lateinit var emptyStateContainer: LinearLayout
-
-    companion object {
-        fun newInstance() = FavoriteTracksFragment()
-    }
-
-
     private val viewModel: FavoriteTracksViewModel by viewModel()
-
     lateinit var binding: FragmentFavoriteTracksBinding
 
     override fun onCreateView(
@@ -83,4 +76,7 @@ class FavoriteTracksFragment : Fragment() {
         emptyStateContainer.visibility = View.VISIBLE
     }
 
+    companion object {
+        fun newInstance() = FavoriteTracksFragment()
+    }
 }

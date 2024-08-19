@@ -15,11 +15,6 @@ class MediaFragment : Fragment() {
     private lateinit var binding: FragmentMediaBinding
     private var tabMediator: TabLayoutMediator? = null
 
-    companion object {
-        fun newInstance() = MediaFragment()
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,7 +22,6 @@ class MediaFragment : Fragment() {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,5 +43,10 @@ class MediaFragment : Fragment() {
         tabMediator?.detach()
         tabMediator = null
         super.onDestroy()
+    }
+
+    companion object {
+        fun newInstance() = MediaFragment()
+
     }
 }

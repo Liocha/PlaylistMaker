@@ -3,8 +3,11 @@ package com.example.playlistmaker.player.ui.activity
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -12,12 +15,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.media.ui.CreatePlaylistFragment
+import com.example.playlistmaker.player.ui.adapter.PlaylistItemAdapter
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerScreenState
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.utils.TextHelper
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -30,6 +40,16 @@ class AudioplayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageButton
     private lateinit var currentTrackTime: TextView
     private lateinit var favoritesButton: ImageButton
+    private lateinit var btnAddToPlaylist: ImageButton
+    private lateinit var playlistItemAdapter: PlaylistItemAdapter
+    private lateinit var playlistsItemsView: RecyclerView
+
+    private lateinit var bottomSheetContainer: LinearLayout
+    private lateinit var fragmentContainer: FrameLayout
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var overlay: View
+
+    private lateinit var main: ScrollView
 
     private val track: Track? by lazy {
         intent?.getParcelableExtra("track")
@@ -94,15 +114,103 @@ class AudioplayerActivity : AppCompatActivity() {
         viewModel.isFavorite.observe(this) { isFavorite ->
             if (isFavorite) {
                 favoritesButton.setImageResource(R.drawable.ic_favorite_track_active)
-                favoritesButton.setSelected(isFavorite);
+                favoritesButton.setSelected(isFavorite)
             } else {
                 favoritesButton.setImageResource(R.drawable.ic_favorite_track_inactive)
-                favoritesButton.setSelected(isFavorite);
+                favoritesButton.setSelected(isFavorite)
             }
         }
 
+        playlistsItemsView = findViewById(R.id.list_of_playlist)
+        playlistItemAdapter =
+            PlaylistItemAdapter({ count ->
+                TextHelper.getCountEnding(
+                    this,
+                    count
+                )
+            }) { viewModel.addTrackToPlaylist(it) }
+
+        playlistsItemsView.apply {
+            layoutManager = LinearLayoutManager(this@AudioplayerActivity)
+            adapter = playlistItemAdapter
+        }
+
+        viewModel.playlists.observe(this) { playlists ->
+            playlistItemAdapter.updateData(playlists)
+        }
+
+        btnAddToPlaylist = findViewById(R.id.btnAdd)
+
+        overlay = findViewById<View>(R.id.overlay)
+
+        bottomSheetContainer = findViewById(R.id.standard_bottom_sheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+            .apply { state = BottomSheetBehavior.STATE_HIDDEN }
+
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        overlay.visibility = View.GONE
+                    }
+
+                    else -> {
+                        overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        btnAddToPlaylist.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        viewModel.toastMessage.observe(this) { message ->
+            val text = getString(message.first, message.second)
+            Snackbar.make(findViewById(R.id.layout_wrap), text, Snackbar.LENGTH_SHORT).show()
+        }
+
+        val btnAddToPlaylist = findViewById<TextView>(R.id.btn_create_playlist)
+        btnAddToPlaylist.setOnClickListener {
+            showCreatePlaylistFragment()
+        }
+
+        fragmentContainer = findViewById(R.id.fragment_container)
+        main = findViewById(R.id.main)
+
+        viewModel.trackAdded.observe(this) { isAdded ->
+            if (isAdded) {
+               bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
     }
 
+    private fun showCreatePlaylistFragment() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        val fragment = CreatePlaylistFragment.newInstance()
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                main.visibility = View.VISIBLE
+                fragmentContainer.visibility = View.GONE
+            }
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+
+        overlay.visibility = View.GONE
+        main.visibility = View.GONE
+        fragmentContainer.visibility = View.VISIBLE
+    }
 
     private fun updateUi(track: Track) {
         val artistNameTextView = findViewById<TextView>(R.id.artistName)
@@ -154,6 +262,5 @@ class AudioplayerActivity : AppCompatActivity() {
             viewModel.onCleared()
         }
     }
-
 }
 

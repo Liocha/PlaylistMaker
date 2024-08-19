@@ -21,9 +21,6 @@ class SearchViewModel(
     private val saveSearchHistoryUseCase: SaveSearchHistory,
     private val clearSearchHistoryUseCase: ClearSearchHistory
 ) : AndroidViewModel(application) {
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
 
     private val _state = MutableLiveData<SearchState>()
     val state: LiveData<SearchState> get() = _state
@@ -37,8 +34,8 @@ class SearchViewModel(
     private val _searchQuery = MutableLiveData<String>().apply { value = "" }
     val searchQuery: LiveData<String> get() = _searchQuery
 
-    private val _showToast = SingleLiveEvent<String>()
-    val showToast: LiveData<String> get() = _showToast
+    private val _showToast = SingleLiveEvent<String?>()
+    val showToast: SingleLiveEvent<String?> get() = _showToast
 
     private var latestSearchText: String? = null
 
@@ -81,7 +78,7 @@ class SearchViewModel(
         when {
             errorMessage != null -> {
                 renderState(SearchState.Error(errorMessage))
-                _showToast.postValue(errorMessage!!)
+                _showToast.postValue(errorMessage)
             }
 
             tracks.isEmpty() -> {
@@ -173,5 +170,9 @@ class SearchViewModel(
         if (_searchQuery.value != "") {
             latestSearchText?.let { searchRequest(it) }
         }
+    }
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

@@ -16,11 +16,6 @@ class SettingsFragment : Fragment() {
     lateinit var binding: FragmentSettingsBinding
     private val viewModel by viewModel<SettingsViewModel>()
 
-    companion object {
-        fun newInstance() =
-            SettingsFragment()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,5 +48,8 @@ class SettingsFragment : Fragment() {
         }
     }
 
-
+    companion object {
+        fun newInstance() =
+            SettingsFragment()
+    }
 }

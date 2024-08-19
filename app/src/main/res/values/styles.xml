@@ -95,6 +95,39 @@
         <item name="itemTextColor">@color/bottom_nav_item_color</item>
     </style>
 
+    <style name="CustomCreateButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:backgroundTint">@color/button_background_selector</item>
+    </style>
 
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">text</item>
+        <item name="android:layout_marginHorizontal">17dp</item>
+        <item name="boxStrokeColor">@color/yp_blue</item>
+        <item name="hintTextColor">@color/yp_blue</item>
+    </style>
 
+    <style name="CustomToastTextViewStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">@color/yp_black</item>
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+
+    <style name="RoundedImageViewStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>

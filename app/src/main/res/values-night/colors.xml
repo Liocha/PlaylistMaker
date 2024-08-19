@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="round_background">#40FFFFFF</color>
     <color name="round_play_background">#1A1B22</color>
     <color name="active_navigation_element">#3772E7</color>
     <color name="not_active_navigation_element">#FFFFFF</color>
+    <color name="backgroundTintSnackbar">@color/yp_white</color>
+    <color name="actionTextColorSnackbar">@color/yp_black</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/yp_white
+    </color>
+    <color name="background_bottom_sheet">#000000</color>
 </resources>
