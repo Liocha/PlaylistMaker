@@ -12,7 +12,7 @@ import com.example.playlistmaker.media.domain.model.Playlist
 
 class PlaylistCollectionItemAdapter(
     private val getCountEnding: (tracksCount: Int) -> String,
-    private val onClick: (Playlist) -> Unit
+    private val onClick: (playlistId: Int) -> Unit
 ) : Adapter<PlaylistCollectionItemAdapter.PlaylistCollectionItemViewHolder>() {
 
     private var playlistCollection = listOf<Playlist>()
@@ -56,7 +56,7 @@ class PlaylistCollectionItemAdapter(
     override fun onBindViewHolder(holder: PlaylistCollectionItemViewHolder, position: Int) {
         holder.bind(playlistCollection[position])
         holder.itemView.setOnClickListener {
-            onClick(playlistCollection[position])
+            onClick(playlistCollection[position].id)
         }
     }
 

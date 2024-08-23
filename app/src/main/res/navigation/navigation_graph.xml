@@ -37,6 +37,14 @@
         <action
             android:id="@+id/action_mediaFragment_to_createPlaylistFragment"
             app:destination="@id/createPlaylistFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_editPlaylistFragment"
+            app:destination="@id/editPlaylistFragment">
+            <argument
+                android:name="playlistId"
+                app:argType="integer"
+                app:nullable="false" />
+        </action>
     </fragment>
     <activity
         android:id="@+id/audioplayerActivity"
@@ -48,4 +56,23 @@
         android:name="com.example.playlistmaker.media.ui.CreatePlaylistFragment"
         android:label="CreatePlaylistFragment"
         tools:layout="@layout/fragment_create_playlist"></fragment>
+    <fragment
+        android:id="@+id/editPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.EditPlaylistFragment"
+        android:label="EditPlaylistFragment">
+        <action
+            android:id="@+id/action_editPlaylistFragment_to_audioplayerActivity"
+            app:destination="@id/audioplayerActivity">
+            <argument
+                android:name="track"
+                app:argType="com.example.playlistmaker.search.domain.model.Track" />
+        </action>
+        <action
+            android:id="@+id/action_editPlaylistFragment_to_updatePlaylistFragment"
+            app:destination="@id/updatePlaylistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updatePlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.UpdatePlaylistFragment"
+        android:label="UpdatePlaylistFragment" />
 </navigation>

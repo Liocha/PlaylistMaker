@@ -30,12 +30,20 @@ class RootActivity : AppCompatActivity() {
                     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 }
 
+                R.id.editPlaylistFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
+
+                R.id.updatePlaylistFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
+
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
             }
         }
-
     }
-
 }

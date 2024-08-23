@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCollectionBinding
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.ui.adapter.PlaylistCollectionItemAdapter
@@ -43,7 +44,12 @@ class PlaylistCollectionFragment : Fragment() {
                 requireContext(),
                 count
             )
-        }) { }
+        }) { playlistId ->
+            val bundle = Bundle().apply {
+                putInt("playlistId", playlistId)
+            }
+            findNavController().navigate(R.id.action_mediaFragment_to_editPlaylistFragment, bundle)
+        }
         emptyStateContainer = binding.emptyStateContainer
 
         playlistCollectionItemsView.apply {

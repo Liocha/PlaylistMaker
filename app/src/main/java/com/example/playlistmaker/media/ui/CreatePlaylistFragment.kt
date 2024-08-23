@@ -19,10 +19,10 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class CreatePlaylistFragment : Fragment() {
+open class CreatePlaylistFragment : Fragment() {
 
     lateinit var binding: FragmentCreatePlaylistBinding
-    val viewModel: CreatePlaylistViewModel by viewModel()
+    open val viewModel: CreatePlaylistViewModel by viewModel()
     lateinit var confirmDialog: MaterialAlertDialogBuilder
     override fun onCreateView(
         inflater: LayoutInflater,
