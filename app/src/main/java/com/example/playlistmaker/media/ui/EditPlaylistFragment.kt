@@ -23,16 +23,15 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditPlaylistFragment : Fragment() {
-    lateinit var binding: FragmentEditPlaylistBinding
-    val viewModel: EditPlaylistViewModel by viewModel()
+    private lateinit var binding: FragmentEditPlaylistBinding
+    private val viewModel: EditPlaylistViewModel by viewModel()
     private lateinit var trackItemsView: RecyclerView
     private lateinit var editPlaylistItemAdapter: EditPlaylistItemAdapter
-    lateinit var confirmDialog: MaterialAlertDialogBuilder
-    lateinit var tracksListBottomSheetContainer: LinearLayout
-    lateinit var tracksListBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
-
-    lateinit var menuBottomSheetContainer: ConstraintLayout
-    lateinit var menuBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
+    private lateinit var tracksListBottomSheetContainer: LinearLayout
+    private lateinit var tracksListBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var menuBottomSheetContainer: ConstraintLayout
+    private lateinit var menuBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
