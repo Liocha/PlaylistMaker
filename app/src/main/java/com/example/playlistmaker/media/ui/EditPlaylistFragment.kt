@@ -88,7 +88,6 @@ class EditPlaylistFragment : Fragment() {
                 val text = getString(R.string.dialog_message_empty_playlist)
                 Snackbar.make(binding.wrap, text, Snackbar.LENGTH_SHORT).show()
                 viewModel.showNoTracksMessage(false)
-                menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
 
@@ -140,6 +139,10 @@ class EditPlaylistFragment : Fragment() {
 
         viewModel.navigateBack.observe(viewLifecycleOwner) {
             findNavController().popBackStack()
+        }
+
+        viewModel.hideBottomSheetMenu.observe(viewLifecycleOwner) {
+            menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }
 

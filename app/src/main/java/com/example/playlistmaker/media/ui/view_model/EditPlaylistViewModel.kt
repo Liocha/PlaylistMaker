@@ -28,6 +28,9 @@ class EditPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) 
     private val _navigateBack = MutableLiveData<Unit>()
     val navigateBack: LiveData<Unit> get() = _navigateBack
 
+    private val _hideBottomSheetMenu = MutableLiveData<Unit>()
+    val hideBottomSheetMenu: LiveData<Unit> get() = _hideBottomSheetMenu
+
     fun loadPlaylist(playlistId: Int) {
         viewModelScope.launch {
             val playlist = playlistInteractor.getPlaylistById(playlistId)
@@ -62,9 +65,11 @@ class EditPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) 
             if (it.tracksCount > 0) {
                 viewModelScope.launch {
                     playlistInteractor.sharePlaylist(it.id)
+                    _hideBottomSheetMenu.postValue(Unit)
                 }
             } else {
                 showNoTracksMessage(true)
+                _hideBottomSheetMenu.postValue(Unit)
             }
         }
 
