@@ -71,7 +71,7 @@ class PlaylistRepositoryImpl(
         return Uri.fromFile(file)
     }
 
-    override suspend fun getPlaylistByid(id: Int): Playlist {
+    override suspend fun getPlaylistById(id: Int): Playlist {
         val playlistEntity = appDatabase.playlistDao().getPlaylistById(id)
         return playlistDbConverter.map(playlistEntity)
     }
@@ -80,10 +80,12 @@ class PlaylistRepositoryImpl(
         val trackIds = getTrackIdsFromJson(trackIdList)
         return appDatabase.playlistTrackDao().getTracksByIds(trackIds)
             .map { trackEntity -> playlistTrackDbConverter.map(trackEntity) }
+            .sortedBy { trackIds.indexOf(it.trackId) }
+            .reversed()
     }
 
     override suspend fun removeTrackFromPlaylist(playlistId: Int, trackId: String) {
-        val playlist = getPlaylistByid(playlistId)
+        val playlist = getPlaylistById(playlistId)
         val trackIds = getTrackIdsFromJson(playlist.trackIdList)
         trackIds.removeIf { it == trackId }
         updateTrackIdList(playlist.id, trackIds)
@@ -99,7 +101,7 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun sharePlaylist(playlistId: Int) {
-        val playlist = getPlaylistByid(playlistId)
+        val playlist = getPlaylistById(playlistId)
         val playlistData = mutableListOf<String>()
         playlistData.add(playlist.name)
         playlistData.add(playlist.description)
@@ -127,7 +129,7 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun deletePlaylist(playlistId: Int) {
-        val playlistToDelete = getPlaylistByid(playlistId)
+        val playlistToDelete = getPlaylistById(playlistId)
         val trackIdsToDelete = getTrackIdsFromJson(playlistToDelete.trackIdList)
         val allPlaylists = getAll().first()
         val tracksUsedInPlaylists = allPlaylists.filter { it.id != playlistToDelete.id }
@@ -149,7 +151,7 @@ class PlaylistRepositoryImpl(
         description: String?,
         imagePath: Uri?
     ) {
-        val playlist = getPlaylistByid(id)
+        val playlist = getPlaylistById(id)
         val updatedPlaylist = playlist.copy(
             name = name ?: playlist.name,
             description = description ?: playlist.description,

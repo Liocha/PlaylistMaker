@@ -28,8 +28,8 @@ class PlaylistInteractorImpl(private val repository: PlaylistRepository) : Playl
         return repository.saveImageToPrivateStorage(uri)
     }
 
-    override suspend fun getPlaylistByid(id: Int): Playlist {
-        return repository.getPlaylistByid(id)
+    override suspend fun getPlaylistById(id: Int): Playlist {
+        return repository.getPlaylistById(id)
     }
 
     override suspend fun getAllTracksByIds(trackIdList: String): List<Track>? {

@@ -30,7 +30,7 @@ class EditPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) 
 
     fun loadPlaylist(playlistId: Int) {
         viewModelScope.launch {
-            val playlist = playlistInteractor.getPlaylistByid(playlistId)
+            val playlist = playlistInteractor.getPlaylistById(playlistId)
             val trackList = playlistInteractor.getAllTracksByIds(playlist.trackIdList)
             val totalDurationOfAllTracks =
                 trackList?.fold(0) { acc, track -> acc + track.trackTimeMillis }

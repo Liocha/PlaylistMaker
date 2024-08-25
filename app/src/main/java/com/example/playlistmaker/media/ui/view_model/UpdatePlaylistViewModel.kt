@@ -18,7 +18,7 @@ class UpdatePlaylistViewModel(playlistInteractor: PlaylistInteractor) : CreatePl
 
     fun loadPlaylist(it: Int) {
         viewModelScope.launch {
-            val playlist = playlistInteractor.getPlaylistByid(it)
+            val playlist = playlistInteractor.getPlaylistById(it)
             _playlistData.value = playlist
 
             _name.value = playlist.name
