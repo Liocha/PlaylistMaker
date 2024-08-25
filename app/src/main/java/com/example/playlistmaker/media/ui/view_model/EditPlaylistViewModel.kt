@@ -65,11 +65,11 @@ class EditPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) 
             if (it.tracksCount > 0) {
                 viewModelScope.launch {
                     playlistInteractor.sharePlaylist(it.id)
-                    _hideBottomSheetMenu.postValue(Unit)
+                    hideBottomSheetMenu()
                 }
             } else {
                 showNoTracksMessage(true)
-                _hideBottomSheetMenu.postValue(Unit)
+                hideBottomSheetMenu()
             }
         }
 
@@ -84,5 +84,9 @@ class EditPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) 
             _currentPlaylist.value?.id?.let { playlistInteractor.deletePlaylist(it) }
             _navigateBack.value = Unit
         }
+    }
+
+    fun hideBottomSheetMenu() {
+        _hideBottomSheetMenu.postValue(Unit)
     }
 }

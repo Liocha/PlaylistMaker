@@ -125,6 +125,7 @@ class EditPlaylistFragment : Fragment() {
 
         binding.menuBottomSheetSharePlaylist.setOnClickListener { viewModel.sharePlaylist() }
         binding.menuBottomSheetEditPlaylist.setOnClickListener {
+            viewModel.hideBottomSheetMenu()
             viewModel.currentPlaylist.value?.id?.let {
                 val bundle = Bundle().apply {
                     putInt("playlistId", it)
