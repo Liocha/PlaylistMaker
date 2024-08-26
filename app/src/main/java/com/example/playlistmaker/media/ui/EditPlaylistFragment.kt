@@ -77,6 +77,11 @@ class EditPlaylistFragment : Fragment() {
         }
 
         viewModel.playlistTracks.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                binding.emptyPlaylistMessage.visibility = View.VISIBLE
+            } else {
+                binding.emptyPlaylistMessage.visibility = View.GONE
+            }
             editPlaylistItemAdapter.updateData(it)
         }
 
