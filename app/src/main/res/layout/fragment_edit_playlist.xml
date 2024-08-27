@@ -5,15 +5,15 @@
     android:id="@+id/layout_wrap"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/yp_light_gray"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/wrap"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/yp_light_gray">
-
-
+        android:layout_height="wrap_content"
+        >
         <ImageView
             android:id="@+id/imageCover"
             android:layout_width="0dp"
@@ -93,7 +93,6 @@
 
         <TextView
             android:id="@+id/tracks_count"
-            style="@style/ItemSearchSubText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -103,7 +102,7 @@
             android:textColor="@color/yp_black"
             android:textFontWeight="400"
             android:textSize="18sp"
-            app:drawableStartCompat="@drawable/ic_ellipse"
+            app:drawableStartCompat="@drawable/ic_ellipse_black"
             app:layout_constrainedWidth="true"
             app:layout_constraintStart_toEndOf="@id/tracks_time"
             app:layout_constraintTop_toBottomOf="@id/playlistDescription"
@@ -136,7 +135,6 @@
             app:layout_constraintStart_toEndOf="@id/btnShare"
             app:layout_constraintTop_toBottomOf="@id/tracks_time" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -147,7 +145,6 @@
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="250dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
@@ -164,7 +161,7 @@
             android:layout_marginTop="24dp"
             android:gravity="center"
             android:text="@string/there_are_no_tracks"
-            android:textColor="@color/yp_black"
+            android:textColor="@color/hint_color"
             android:visibility="gone" />
 
 

@@ -9,4 +9,5 @@
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/yp_white
     </color>
     <color name="background_bottom_sheet">#000000</color>
+    <color name="hint_color">#FFFFFF</color>
 </resources>

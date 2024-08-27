@@ -1,9 +1,11 @@
 package com.example.playlistmaker.media.ui
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -149,6 +151,20 @@ class EditPlaylistFragment : Fragment() {
         viewModel.hideBottomSheetMenu.observe(viewLifecycleOwner) {
             menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
+
+        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+        val customHeightInPx = resources.getDimensionPixelSize(R.dimen.bottom_sheet_margin)
+
+        val wrapLayout = binding.wrap
+        wrapLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val wrapHeight = wrapLayout.height
+                val peekHeight = screenHeight - wrapHeight - customHeightInPx
+                tracksListBottomSheetBehavior.peekHeight = peekHeight
+                wrapLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     private fun render(playlist: Playlist?) {
