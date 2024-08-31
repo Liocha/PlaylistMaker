@@ -161,10 +161,8 @@ class AudioPlayerViewModel(
             gson.fromJson(playlist.trackIdList, type) ?: mutableListOf()
         if (!trackIds.contains(track.trackId)) {
             trackIds.add(track.trackId)
-            val tracksCount = trackIds.count()
-            val trackIdList = gson.toJson(trackIds)
             viewModelScope.launch {
-                playlistInteractor.updateTrackIdList(playlist.id, trackIdList, tracksCount)
+                playlistInteractor.updateTrackIdList(playlist.id, trackIds)
                 playlistInteractor.addTrack(track)
                 showToast(R.string.track_added_to_playlist, playlist.name)
                 _trackAdded.postValue(true)

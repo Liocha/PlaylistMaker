@@ -16,8 +16,8 @@ class PlaylistInteractorImpl(private val repository: PlaylistRepository) : Playl
         return repository.getAll()
     }
 
-    override suspend fun updateTrackIdList(playlistId: Int, trackIdList: String, tracksCount: Int) {
-        repository.updateTrackIdList(playlistId, trackIdList, tracksCount)
+    override suspend fun updateTrackIdList(playlistId: Int, trackIdList: List<String>) {
+        repository.updateTrackIdList(playlistId, trackIdList)
     }
 
     override suspend fun addTrack(track: Track) {
@@ -25,6 +25,40 @@ class PlaylistInteractorImpl(private val repository: PlaylistRepository) : Playl
     }
 
     override suspend fun saveImageToPrivateStorage(uri: Uri): Uri {
-       return repository.saveImageToPrivateStorage(uri)
+        return repository.saveImageToPrivateStorage(uri)
+    }
+
+    override suspend fun getPlaylistById(id: Int): Playlist {
+        return repository.getPlaylistById(id)
+    }
+
+    override suspend fun getAllTracksByIds(trackIdList: String): List<Track>? {
+        return repository.getAllTracksByIds(trackIdList)
+    }
+
+    override suspend fun removeTrackFromPlaylist(playlistId: Int, trackId: String) {
+        repository.removeTrackFromPlaylist(playlistId, trackId)
+    }
+
+    override suspend fun sharePlaylist(playlistId: Int) {
+        repository.sharePlaylist(playlistId)
+    }
+
+    override suspend fun deletePlaylist(playlistId: Int) {
+        repository.deletePlaylist(playlistId)
+    }
+
+    override suspend fun updatePlaylistData(
+        id: Int,
+        name: String?,
+        description: String?,
+        imagePath: Uri?
+    ) {
+        repository.updatePlaylistData(
+            id = id,
+            name = name,
+            description = description,
+            imagePath = imagePath
+        )
     }
 }

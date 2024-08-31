@@ -8,4 +8,5 @@
     <dimen name="corner_radius_search_cover_img">8dp</dimen>
     <dimen name="placeholder_message_top_margin">100dp</dimen>
     <dimen name="placeholder_icon_message_padding">16dp</dimen>
+    <dimen name="bottom_sheet_margin">40dp</dimen>
 </resources>

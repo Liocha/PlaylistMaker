@@ -9,12 +9,12 @@ import com.example.playlistmaker.media.domain.interactor.PlaylistInteractor
 import com.example.playlistmaker.media.domain.model.Playlist
 import kotlinx.coroutines.launch
 
-class CreatePlaylistViewModel(
-    private val playlistInteractor: PlaylistInteractor
+open class CreatePlaylistViewModel(
+    val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
-    private val _name = MutableLiveData("")
-    private val _description = MutableLiveData("")
+    val _name = MutableLiveData("")
+    val _description = MutableLiveData("")
 
     private val _canCreatePlaylist = MutableLiveData(false)
     val canCreatePlaylist: LiveData<Boolean> get() = _canCreatePlaylist
@@ -22,7 +22,7 @@ class CreatePlaylistViewModel(
     private val _navigationState = MutableLiveData<NavigationState>(NavigationState.DefaultNothing)
     val navigationState: LiveData<NavigationState> get() = _navigationState
 
-    private val _selectedImageUri = MutableLiveData<Uri>()
+    val _selectedImageUri = MutableLiveData<Uri>()
 
     fun onNameChanged(name: String) {
         _name.postValue(name)
@@ -40,7 +40,7 @@ class CreatePlaylistViewModel(
         }
 
         viewModelScope.launch {
-           val savedImagePath = _selectedImageUri.value?.let { uri ->
+            val savedImagePath = _selectedImageUri.value?.let { uri ->
                 playlistInteractor.saveImageToPrivateStorage(uri)
             }
 
@@ -69,5 +69,4 @@ class CreatePlaylistViewModel(
     fun setSelectedImageUri(uri: Uri) {
         _selectedImageUri.value = uri
     }
-
 }

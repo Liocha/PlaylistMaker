@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/artwork_url_100"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginVertical="8dp"
+        android:layout_marginStart="13dp"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/placeholder_artwork" />
+
+    <TextView
+        android:id="@+id/track_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="14dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/arrow_icon"
+        app:layout_constraintStart_toEndOf="@id/artwork_url_100"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Can't Help Falling in Love" />
+
+    <TextView
+        android:id="@+id/artist_name"
+        style="@style/ItemSearchSubText"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/track_time"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/artwork_url_100"
+        app:layout_constraintTop_toBottomOf="@id/track_name"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_goneMarginEnd="0dp"
+        tools:text="Elvis Presley" />
+
+    <TextView
+        android:id="@+id/track_time"
+        style="@style/ItemSearchSubText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:drawablePadding="5dp"
+        app:drawableStartCompat="@drawable/ic_ellipse"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/arrow_icon"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/artist_name"
+        app:layout_constraintTop_toBottomOf="@id/track_name"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_goneMarginStart="0dp"
+        tools:text="7:77" />
+
+    <ImageView
+        android:id="@+id/arrow_icon"
+        android:contentDescription="@null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_arrow_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+</androidx.constraintlayout.widget.ConstraintLayout>

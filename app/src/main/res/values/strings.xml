@@ -48,9 +48,23 @@
     <string name="playlist_created_message">Плейлист %1$s создан</string>
     <string name="dialog_title_finish_creation">Завершить создание плейлиста?</string>
     <string name="dialog_message_unsaved_data">Все несохраненные данные будут потеряны</string>
+    <string name="dialog_message_empty_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="dialog_button_cancel">Отмена</string>
     <string name="dialog_button_finish">Завершить</string>
     <string name="track_singular">трек</string>
     <string name="track_few">трека</string>
     <string name="track_many">треков</string>
+    <string name="minute_singular">минута</string>
+    <string name="minute_few">минуты</string>
+    <string name="minute_many">минут</string>
+    <string name="want_to_delete_track">Хотите удалить трек?</string>
+    <string name="want_to_delete_playlist">Хотите удалить плейлист?</string>
+    <string name="yes_action">да</string>
+    <string name="no_action">нет</string>
+    <string name="share_playlist">Поделиться</string>
+    <string name="edit_playlist">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+    <string name="header_edit_playlist">Редактировать</string>
+    <string name="save">Сохранить</string>
+    <string name="there_are_no_tracks">В этом плейлисте нет треков</string>
 </resources>
